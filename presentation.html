@@ -4,48 +4,36 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="author" content="Matt Bovel @LAMP/LARA, EPFL">
-  <meta name="dcterms.date" content="2024-06-20">
-  <title>Towards nicer slides</title>
+  <meta name="dcterms.date" content="2025-10-13">
+  <title>Logically Qualified Types for Scala 3</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
-  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^5/dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^5/dist/reveal.css">
   <style>
     .reveal .sourceCode {  /* see #7635 */
       overflow: visible;
     }
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
     ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
       width: 0.8em;
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
-  <script defer=""
-  src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
-  <script>document.addEventListener("DOMContentLoaded", function () {
- var mathElements = document.getElementsByClassName("math");
- var macros = [];
- for (var i = 0; i < mathElements.length; i++) {
-  var texText = mathElements[i].firstChild;
-  if (mathElements[i].tagName == "SPAN") {
-   katex.render(texText.data, mathElements[i], {
-    displayMode: mathElements[i].classList.contains('display'),
-    throwOnError: false,
-    macros: macros,
-    fleqn: false
-   });
-}}});
-  </script>
-  <link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^5/dist/theme/white.css" id="theme">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
   <link rel="stylesheet" href="custom.css" />
 </head>
@@ -54,91 +42,681 @@
     <div class="slides">
 
 <section id="title-slide">
-  <h1 class="title">Towards nicer slides</h1>
+  <h1 class="title">Logically Qualified Types<br/>for Scala 3</h1>
   <p class="author"><a href="mailto:matthieu@bovel.net">Matt Bovel</a>
 @<a href="https://www.epfl.ch/labs/lamp/">LAMP</a>/<a
 href="https://lara.epfl.ch/w/">LARA</a>, <a
 href="https://www.epfl.ch/fr/">EPFL</a></p>
-  <p class="date">June 20, 2024</p>
+  <p class="date">October 13, 2025</p>
 </section>
 
-<section id="markdown" class="title-slide slide level1">
-<h1>Markdown</h1>
+<section id="introduction" class="slide level2">
+<h2>Introduction</h2>
+<p>I am <a href="mailto:matthieu@bovel.net">Matt Bovel</a> (<a
+href="https://github.com/mbovel"><span class="citation"
+data-cites="mbovel">@mbovel</span></a>).</p>
+<div class="fragment">
+<p>A PhD student at EPFL in Switzerland, between two labs:</p>
 <ul>
-<li>Item 1</li>
-<li>Item 2</li>
+<li><a href="https://www.epfl.ch/labs/lamp/">LAMP</a>: led by Martin
+Odersky, making the <a href="https://github.com/scala/scala3/">Scala
+compiler</a>,</li>
+<li><a href="https://lara.epfl.ch/w/">LARA</a>: led by Viktor Kunčak,
+making the <a href="https://github.com/epfl-lara/stainless">Stainless
+verifier</a>.</li>
 </ul>
-<ol type="1">
-<li>Item 1</li>
-<li>Item 2</li>
-</ol>
-<p><em>Emphasis</em>, <strong>Strong</strong></p>
+</div>
+<div class="fragment">
+<p>Work done in collaboration with Quentin Bernet and Valentin
+Schneeberger.</p>
+</div>
+<aside class="notes">
+<p>I am Matt Bovel, a PhD student at EPFL in Switzerland, between two
+labs: LAMP, led by Martin Odersky, making the Scala compiler that you
+probably know, and LARA, led by Viktor Kunčak, making the Stainless
+verifier—a tool to prove properties of Scala programs. It is not
+integrated in the compiler. My job is to bring verification capabilities
+directly into the Scala compiler.</p>
+<p>What I present today has been done in collaboration with Quentin
+Bernet, who designed syntax and runtime checks for qualified types in
+his master’s thesis, and Valentin Schneeberger, who worked on runtime
+checks in his bachelor’s thesis.</p>
+</aside>
 </section>
-
-<section id="syntax-highlighting" class="title-slide slide level1">
-<h1>Syntax highlighting</h1>
-<pre class="scala"><code>val a = if true then 0 else 42
-transparent inline def hello() = ???
-case class Foo(val bar: Int)
-extension (o: Object) def baz() = ???</code></pre>
-<p>(Supports Scala 3 syntax!)</p>
-</section>
-
-<section id="latex" class="title-slide slide level1">
-<h1>LaTeX</h1>
-<p><span class="math display">\phi = \frac{a}{b}</span></p>
-</section>
-
-<section>
-<section id="slide-break" class="title-slide slide level1">
-<h1>Slide break</h1>
-<p>Can break to the next slide without a new heading using a Markdown
-section beak:</p>
-<pre><code>---</code></pre>
-</section>
-<section class="slide level2">
-
-<p>Second part.</p>
-</section></section>
-<section id="columns" class="title-slide slide level1">
-<h1>Columns</h1>
+<section id="motivating-example-safe-list-zip" class="slide level2">
+<h2>Motivating example: Safe list zip</h2>
 <div class="columns">
 <div class="column">
-<p>Column 1 Content</p>
+<p>Consider the standard <code>zip</code> function:</p>
+<pre class="scala"><code>def zip[A, B](
+  as: List[A],
+  bs: List[B]
+): List[(A, B)] =
+  ...</code></pre>
+<div class="fragment">
+<p>How can we specify this function to require both lists to have the
+same size, and return a list of that size?</p>
+</div>
 </div><div class="column">
-<p>Column 2 Content</p>
+<figure style="text-align: right">
+<img src="images/zip.jpg" alt="zip" style="width: 82%">
+<figcaption>
+Black leather zip up jacket, by <a
+href="https://unsplash.com/photos/black-leather-zip-up-jacket-IWskws9WvAs">Todd
+Pham</a>
+</figcaption>
+</figure>
+</div><p><!-- .column --></p>
 </div>
-</div>
-</section>
-
-<section id="fragments" class="title-slide slide level1">
-<h1>Fragments</h1>
-<div class="fragment">
-<p>First thing</p>
-</div>
-<div class="fragment">
-<p>Second thing</p>
-</div>
-</section>
-
-<section id="speaker-notes" class="title-slide slide level1">
-<h1>Speaker notes</h1>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+<p><!-- .columns --></p>
 <aside class="notes">
-<p>This is a note.</p>
-<p>To see notes, press the s key, which will start a pop-up window If it
-does not work, check if your browser stopped the pop-up</p>
+<p>In the Scala standard library, the result is truncated to the shorter
+list.</p>
+<p>But what if we want to ensure they have the same size before
+zipping?</p>
+</aside>
+</section>
+<section id="specify-using-assertions" class="slide level2">
+<h2>Specify using assertions 😕</h2>
+<div class="columns">
+<div class="column">
+<p>We can use assertions:</p>
+<pre class="scala"><code>def zip[A, B](
+  as: List[A],
+  bs: List[B]
+) : List[(A, B)] = {
+  require(as.size == bs.size)
+  ...
+}.ensure(_.size == as.size)</code></pre>
+</div><div class="column fragment">
+<p>Limitations:</p>
+<ul>
+<li><em>Runtime overhead</em>: checked at runtime, not compile
+time,</li>
+<li><em>No static guarantees</em>: only checked for specific
+inputs,</li>
+<li><em>Not part of the API</em>: not visible in function type,</li>
+<li><em>Hard to compose</em>: cannot be passed as type argument.</li>
+</ul>
+</div><p><!-- .column --></p>
+</div>
+<p><!-- .columns --></p>
+<aside class="notes">
+<p>Ideal timing: 01:00</p>
+<p>We can use assertions, but they have limitations. The check happens
+at runtime, so there’s overhead. The compiler can’t verify the
+precondition is satisfied. The precondition is not visible in the
+function type. And assertions don’t compose well—imagine passing a list
+of values that all satisfy some property.</p>
+</aside>
+</section>
+<section id="specify-using-dependent-types" class="slide level2">
+<h2>Specify using dependent types 😕</h2>
+<div class="columns">
+<div class="column">
+<p>Can we use path-dependent types?</p>
+<pre class="scala"><code>def zip[A, B](
+  as: List[A],
+  bs: List[B] {
+    val size: as.size.type
+  }
+): List[(A, B)] {
+  val size: as.size.type
+} = ...</code></pre>
+</div><div class="column fragment">
+<p>Limitations:</p>
+<ul>
+<li><em>Limited reasoning</em>: only fields, literals and limited
+constant folding,</li>
+<li><em>Not inferred</em>: need manual type annotations, or not typable
+at all,</li>
+<li><em>Different languages</em>: term-level vs type-level.</li>
+</ul>
+</div><p><!-- .column --></p>
+</div>
+<p><!-- .columns --></p>
+<aside class="notes">
+<p>Ideal timing: 03:30</p>
+<p>Type-level programming in Scala has several limitations. It only
+works with literals and constant folding—no algebraic reasoning. Types
+are not inferred by default, and sometimes can’t be inferred at all,
+like for <code>x + y</code> above. And the type level and value level
+use different languages, which is confusing. Not all these limitations
+are solved by qualified types, but we make progress.</p>
+</aside>
+</section>
+<section id="specify-using-logically-qualified-types"
+class="slide level2">
+<h2>Specify using logically qualified types ! 🤩</h2>
+<p>Introducing logically qualified types:</p>
+<pre class="scala"><code>def zip[A, B](
+  as: List[A],
+  bs: List[B] with bs.size == as.size
+): {l: List[(A, B)] with l.size == as.size} = ...</code></pre>
+<div class="fragment">
+<p>The return type means<br/> “any value <code>l</code> of type
+<code>List[(A, B)]</code> such that <code>l.size == as.size</code>”.</p>
+</div>
+</section>
+<section id="in-other-languages" class="slide level2">
+<h2>In other languages</h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li><a href="https://dl.acm.org/doi/10.1145/113446.113468">“Refinement
+types for ML” (Freeman &amp; Pfenning, 1991)</a></li>
+<li><a href="https://dl.acm.org/doi/10.1145/1375581.1375604">“Liquid
+Types” (Rondon, Kawaguchi &amp; Jhala, 2008)</a></li>
+<li><a href="https://dl.acm.org/doi/10.1145/2628136.2628161">“Refinement
+Types for Haskell” (Vazou, Seidel, Jhala, Vytiniotis, Peyton-Jones,
+2014)</a></li>
+<li><a href="https://ucsd-progsys.github.io/liquidhaskell/">Liquid
+Haskell</a></li>
+<li><a
+href="https://fstar-lang.org/tutorial/book/part1/part1_getting_off_the_ground.html#boolean-refinement-types">Boolean
+refinement types in F*</a></li>
+<li><a
+href="https://dafny.org/latest/DafnyRef/DafnyRef#sec-subset-types">Subset
+types in Dafny</a></li>
+<li><a
+href="https://lean-lang.org/doc/reference/latest/Basic-Types/Subtypes/">Subtypes
+in Lean</a></li>
+</ul>
+</div><div class="column">
+<div class="fragment">
+<p>In Scala:</p>
+<ul>
+<li><a href="https://dl.acm.org/doi/10.1145/2998392.2998398">“SMT-based
+checking of predicate-qualified types for Scala”, (Schmid &amp; Kunčak,
+2016)</a></li>
+<li><a href="https://github.com/fthomas">Refined library, Frank
+Thomas</a></li>
+<li><a href="https://github.com/Iltotore/iron">Iron library, Raphaël
+Fromentin</a></li>
+</ul>
+</div>
+<p><!--- .fragment --></p>
+</div><p><!-- .column --></p>
+</div>
+<p><!-- .columns --></p>
+</section>
+<section id="syntax" class="slide level2">
+<h2>Syntax</h2>
+<pre class="scala"><code>type NonEmptyList[A] = { l: List[A] with l.nonEmpty }</code></pre>
+<ul>
+<li><code>l</code>: binder</li>
+<li><code>List[A]</code>: parent type</li>
+<li><code>l.nonEmpty</code>: qualifier (predicate)</li>
+</ul>
+<div class="fragment">
+<p>Not to be confused with Scala’s existing structural refinement
+types:</p>
+<pre class="scala"><code>case class Box(value: Any)
+type IntBox = Box { val value: Int }</code></pre>
+</div>
+<aside class="notes">
+<p>Ideal timing: 04:30</p>
+<p>A qualified type defines a subset of values. Here <code>l</code> is a
+binder, <code>List[A]</code> is the parent type, and
+<code>l.nonEmpty</code> is the predicate or qualifier. This reads “all
+List[A] values l such that l is non-empty”. In other languages, this is
+called refinement types in Liquid Haskell, boolean refinement types in
+F*, subset types in Dafny, or subtypes in Lean. We call them logically
+qualified types in Scala to distinguish from structural refinement
+types, which refine members like <code>val</code> and
+<code>def</code>.</p>
+</aside>
+</section>
+<section id="shorthand-syntax" class="slide level2">
+<h2>Shorthand syntax</h2>
+<p>When a binder already exists, such as in:</p>
+<pre class="scala"><code>def zip[A, B](as: List[A], bs: {bs: List[B] with bs.size == as.size})</code></pre>
+<div class="fragment">
+<p>We can omit it:</p>
+<pre class="scala"><code>def zip[A, B](as: List[A], bs: List[B] with bs.size == as.size)</code></pre>
+</div>
+<div class="fragment">
+<p>The second version is desugared to the first.</p>
+</div>
+<aside class="notes">
+<p>Ideal timing: 04:00</p>
+<p>When the value already has a name, like a parameter or val, you can
+skip the binder. The name is reused in the predicate.</p>
+</aside>
+</section>
+<section id="more-list-api-examples" class="slide level2">
+<h2>More list API examples 🥳</h2>
+<pre class="scala"><code>def zip[A, B](as: List[A], bs: List[B] with bs.size == as.size):
+  {l: List[(A, B)] with l.size == as.size}</code></pre>
+<pre class="scala fragment"><code>def concat[T](as: List[T], bs: List[T]):
+  {rs: List[T] with rs.size == as.size + bs.size}</code></pre>
+<pre class="scala fragment"><code>val xs: List[Int] = ...
+val ys: List[Int] = ...
+zip(concat(xs, ys), concat(ys, xs))
+zip(concat(xs, ys), concat(xs, xs)) // error</code></pre>
+<aside class="notes">
+<p>Ideal timing: 05:30</p>
+</aside>
+</section>
+<section id="what-are-valid-predicates" class="slide level2">
+<h2>What are valid predicates?</h2>
+<div class="fragment">
+<pre class="scala"><code>var x = 3
+val y: Int with y == 3 = x // ⛔️ x is mutable</code></pre>
+</div>
+<div class="fragment">
+<pre class="scala"><code>class Box(val value: Int)
+val b: Box with b == Box(3) = Box(3) // ⛔️ Box has equality by reference</code></pre>
+</div>
+<div class="fragment">
+<p>The predicate language is restricted to a fragment of Scala
+consisting of constants, stable identifiers, field selections over
+<code>val</code> fields, pure term applications, type applications, and
+constructors of case classes without initializers.</p>
+</div>
+<div class="fragment">
+<p>Purity of functions is currently not enforced. Should it?</p>
+</div>
+</section>
+<section id="how-to-introduce-qualified-types" class="slide level2">
+<h2>How to introduce qualified types?</h2>
+<p>For backward compatibility and performance reasons, qualified types
+are not inferred from terms by default. The wider type is inferred
+instead:</p>
+<pre class="scala"><code>val x: Int = readInt()
+val y /* : Int */ = x + 1</code></pre>
+</section>
+<section id="selfification" class="slide level2">
+<h2>Selfification</h2>
+<p>However, when a qualified type is expected, the compiler attempts to
+<em>selfify</em> the typed expression: that is, to give
+<code>e: T</code> the qualified type <code>x: T with x == e</code>:</p>
+<pre class="scala"><code>val x: Int = readInt()
+val y: Int with (y == x + 1) = x + 1</code></pre>
+<div class="fragment">
+<pre class="scala"><code>def f(i: Int): Int = i * 2
+val z: Int with (z == x + f(x)) = x + f(x)</code></pre>
+</div>
+<aside class="notes">
+<p>Ideal timing: 06:00</p>
+</aside>
+</section>
+<section id="runtime-checks" class="slide level2">
+<h2>Runtime checks</h2>
+<p>When static checking fails, a qualified type can be checked at
+runtime using pattern matching:</p>
+<pre class="scala"><code>val idRegex = &quot;^[a-zA-Z_][a-zA-Z0-9_]*$&quot;
+type ID = {s: String with s.matches(idRegex)}</code></pre>
+<div class="fragment">
+<pre class="scala"><code>&quot;a2e7-e89b&quot; match
+    case id: ID =&gt; // matched: `id` matches idRegex
+    case id     =&gt; // didn&#39;t match</code></pre>
+</div>
+<aside class="notes">
+<p>Ideal timing: 06:30</p>
+<p>When the compiler can’t verify a predicate statically, you can use
+runtime checks. Pattern matching checks the predicate at runtime.</p>
+</aside>
+</section>
+<section id="runtime-checks-.runtimechecked" class="slide level2">
+<h2>Runtime checks: <code>.runtimeChecked</code></h2>
+<p>Can also use <code>.runtimeChecked</code> (<a
+href="https://docs.scala-lang.org/sips/replace-nonsensical-unchecked-annotation.html">SIP-57</a>)
+when the check must always pass:</p>
+<pre class="scala"><code>val id: ID = &quot;a2e7-e89b&quot;.runtimeChecked</code></pre>
+<div class="fragment">
+<p>Desugars to:</p>
+<pre class="scala"><code>val id: ID =
+  if (&quot;a2e7-e89b&quot;.matches(idRegex)) &quot;a2e7-e89b&quot;.asInstanceOf[ID]
+  else throw new IllegalArgumentException()</code></pre>
+</div>
+<div class="fragment" style="font-size: 0.8em;">
+<p>Note: like with other types, you can also use
+<code>.asInstanceOf[ID]</code> directly to skip the check
+altogether.</p>
+</div>
+</section>
+<section id="runtime-checks-list.collect" class="slide level2">
+<h2>Runtime checks: <code>List.collect</code></h2>
+<p>Scala type parameters are <em>erased</em> at runtime, so we cannot
+match on a <code>List[T]</code>.</p>
+<div class="fragment">
+<p>However, we can use <code>.collect</code> to convert a list easily
+instead:</p>
+<pre class="scala"><code>type Pos = { v: Int with v &gt;= 0 }
+
+val xs = List(-1,2,-2,1)
+xs.collect { case x: Pos =&gt; x } : List[Pos]</code></pre>
+</div>
+</section>
+<section id="subtyping" class="slide level2">
+<h2>Subtyping</h2>
+<p>How does the compiler check
+<code>{x: T with p(x)} &lt;: {y: S with q(y)}</code>?</p>
+<ol type="1">
+<li>Check <code>T &lt;: S</code></li>
+<li>Check <code>p(x)</code> implies <code>q(x)</code> for all
+<code>x</code></li>
+</ol>
+<div class="fragment">
+<p>A solver is needed to check logical implication (2.).</p>
+</div>
+<div class="fragment">
+<p>We developed a lightweight custom solver that combines several
+techniques:</p>
+<ul>
+<li>constant-folding,</li>
+<li>normalization,</li>
+<li>unfolding,</li>
+<li>and equality reasoning.</li>
+</ul>
+</div>
+<aside class="notes">
+<p>Ideal timing: 07:00</p>
+<p>To check if one qualified type is a subtype of another, the compiler
+checks if the parent types are related, and if the first predicate
+implies the second. Our implementation uses a lightweight custom solver
+that combines several techniques.</p>
+</aside>
+</section>
+<section id="subtyping-constant-folding" class="slide level2">
+<h2>Subtyping: constant-folding</h2>
+<pre class="scala"><code>{v: Int with v == 1 + 1}     &lt;: {v: Int with v == 2}</code></pre>
+</section>
+<section id="subtyping-normalization" class="slide level2">
+<h2>Subtyping: normalization</h2>
+<p>Arithmetic expressions are normalized using standard algebraic
+properties, for example commutativity of addition:</p>
+<pre class="scala"><code>{v: Int with v == x + 1}     &lt;: {v: Int with v == 1 + x}</code></pre>
+<div class="fragment">
+<pre class="scala"><code>{v: Int with v == y + x}     &lt;: {v: Int with v == x + y}</code></pre>
+</div>
+<div class="fragment">
+<p>Or factorization:</p>
+<pre class="scala"><code>{v: Int with v == x + 3 * y} &lt;: {v: Int with v == 2 * y + (x + y)}</code></pre>
+</div>
+</section>
+<section id="subtyping-unfolding" class="slide level2">
+<h2>Subtyping: unfolding</h2>
+<p>Remember: qualified types are not inferred from terms by default.
+However, the solver can unfold definitions of local <code>val</code>
+(only), even when they have an imprecise type:</p>
+<pre class="scala"><code>val x: Int = ...
+val y: Int = x + 1
+
+{v: Int with v == y} =:= {v: Int with v == x + 1}</code></pre>
+</section>
+<section id="subtyping-equality-reasoning" class="slide level2">
+<h2>Subtyping: equality reasoning</h2>
+<p>Transitivity of equality:</p>
+<pre class="scala"><code>{v: Int with v == a &amp;&amp; a == b} &lt;: {v: Int with v == b}</code></pre>
+<div class="fragment">
+<p>Congruence of equality:</p>
+<pre class="scala"><code>{v: Int with a == b}           &lt;: {v: Int with f(a) == f(b)}</code></pre>
+</div>
+<div class="fragment">
+<p>This is implemented using an E-Graph-like data structure.</p>
+</div>
+</section>
+<section id="subtyping-with-other-scala-types" class="slide level2">
+<h2>Subtyping with other Scala types</h2>
+<p>Singleton qualified types are subtypes of literal types:</p>
+<pre class="scala"><code>{v: Int with v == 3} &lt;: 3</code></pre>
+<div class="fragment">
+<p>We plan to support subtyping with other Scala types in the
+future.</p>
+</div>
+</section>
+<section id="future-work-sip" class="slide level2">
+<h2>Future work: SIP</h2>
+<p>Some work remains on UX (error messages, IDE support,
+documentation).</p>
+<div class="fragment">
+<p>Then we’ll make a pre-SIP to get feedback from the community.</p>
+</div>
+<div class="fragment">
+<p>Then a full SIP to standardize qualified types in Scala! 🚀</p>
+</div>
+</section>
+<section id="future-work-term-parameterized-types" class="slide level2">
+<h2>Future work: term-parameterized types</h2>
+<pre class="scala"><code>extension [T](list: List[T])
+  def get(index: Int with index &gt;= 0 &amp;&amp; index &lt; list.size): T = ...</code></pre>
+<div class="fragment">
+<p>Would be nice to be able to modularize the “range” concept:</p>
+<pre class="scala"><code>type Range(from: Int, to: Int) = {v: Int with v &gt;= from &amp;&amp; v &lt; to}
+extension [T](list: List[T])
+  def get(index: Range(0, list.size)): T = ...</code></pre>
+</div>
+</section>
+<section id="future-work-flow-sensitive-typing" class="slide level2">
+<h2>Future work: flow-sensitive typing</h2>
+<p>Works with pattern matching:</p>
+<pre class="scala"><code>x match
+  case x: Int with x &gt; 0 =&gt;
+    x: {v: Int with v &gt; 0}</code></pre>
+<div class="fragment">
+<p>Could also work with <code>if</code> conditions:</p>
+<pre class="scala"><code>if (x &gt; 0) then
+  x: {v: Int with v &gt; 0}</code></pre>
+</div>
+</section>
+<section id="future-work-integration-with-external-smt-solvers"
+class="slide level2">
+<h2>Future work: integration with external SMT solvers</h2>
+<p>Our solver is lightweight 👍 but incomplete 👎.</p>
+<div class="fragment">
+<p>In particular, it cannot handle orders yet, for example it cannot
+prove:</p>
+<pre class="scala"><code>{v: Int with v &gt; 2} &lt;: {v: Int with v &gt; 0}</code></pre>
+</div>
+<div class="fragment">
+<p>For this and for more complex predicates, we could integrate with an
+external SMT solver like <a
+href="https://microsoft.github.io/z3guide/docs/logic/intro/">Z3</a>, <a
+href="https://cvc5.github.io/">CVC5</a>, or <a
+href="https://philipp.ruemmer.org/princess.shtml">Princess</a> <em>for
+casting only</em>, so that we don’t pay the potential performance cost
+everywhere.</p>
+</div>
+</section>
+<section id="future-work-flow-sensitive-typing-1" class="slide level2">
+<h2>Future work: flow-sensitive typing</h2>
+<p>Crucially, this would be required for “GADT-like” reasoning with
+qualified types:</p>
+<div style="font-size: 0.7em;">
+<pre class="scala"><code>enum MyList[+T]:
+  case Cons(head: T, tail: MyList[T])
+  case Nil
+
+def myLength(xs: MyList[Int]): Int =
+  xs match
+    case MyList.Nil =&gt;
+      // Add assumption xs == MyList.Nil
+      0
+    case MyList.Cons(_, xs1) =&gt;
+      // Add assumption xs == MyList.Cons(?, xs1)
+      1 + myLength(xs1)</code></pre>
+</div>
+</section>
+<section id="conclusion" class="slide level2">
+<h2>Conclusion</h2>
+<div class="columns">
+<div class="column" style="flex: 2;">
+<ul>
+<li>Syntax: <code>{x: T with p(x)}</code>,</li>
+<li>Selfification: <code>e: T</code> becomes
+<code>x: T with x == e</code> when needed,</li>
+<li>Runtime checks: pattern matching and
+<code>.runtimeChecked</code>,</li>
+<li>Subtyping: custom lightweight solver,</li>
+<li>Future work: SIP, term-parameterized types, flow-sensitive typing,
+SMT integration.</li>
+</ul>
+<hr />
+<ul>
+<li><a href="./talk_proposal.pdf">Two-page summary</a></li>
+<li><a href="https://github.com/scala/scala3/pull/21586">Prototype
+(dotty#21586)</a></li>
+</ul>
+</div><div class="column">
+<figure style="text-align: center">
+<img src="images/qualified_type.png" alt="qualified types" style="width: 45%">
+<figcaption>
+<em>Un type qualifié</em>, by Marina Granados Castro
+</figcaption>
+</figure>
+</div><p><!-- .column --></p>
+</div>
+<p><!-- .columns --></p>
+</section>
+<section id="bonus-works-with-implicit-resolution" class="slide level2">
+<h2>Bonus: works with implicit resolution</h2>
+<div style="font-size: 0.7em;">
+<pre class="scala"><code>type Pos = { v: Int with v &gt;= 0 }
+type Neg = { v: Int with v &lt; 0 }
+
+trait Show[-A]:
+  def apply(a: A): String
+given show1: Show[Pos] with
+  def apply(a: Pos): String = &quot;I am a positive integer!&quot;
+given show2: Show[Neg] with
+  def apply(a: Neg): String = &quot;I am a negative integer!&quot;
+def show[A](a: A)(using s: Show[A]): String = s.apply(a)
+
+def f(x: Int with x == 42, y: Int with y == -42): Unit =
+  println(show(x)) // I am a positive integer!
+  println(show(y)) // I am a negative integer!</code></pre>
+</div>
+</section>
+<section id="checking-integer-equality-at-the-type-level"
+class="slide level2">
+<h2>Checking integer equality at the type level</h2>
+<pre class="scala"><code>def checkSame(dimA: Int, dimB: dimA.type): Unit = ()
+checkSame(3, 3) // ok
+checkSame(3, 4) // error</code></pre>
+<aside class="notes">
+<p>Ideal timing: 01:30</p>
+<p>We can use path-dependent types. Here, <code>dimB</code> must have
+type <code>dimA.type</code>, meaning it must be the same value as
+<code>dimA</code>. This works for simple cases.</p>
+</aside>
+</section>
+<section id="checking-integer-equality-at-the-type-level-1"
+class="slide level2">
+<h2>Checking integer equality at the type level 🥲</h2>
+<pre class="scala"><code>def checkSame(dimA: Int, dimB: dimA.type): Unit = ()
+val x = 3
+val y = 3
+checkSame(x, y) // error</code></pre>
+<aside class="notes">
+<p>Ideal timing: 01:45</p>
+<p>But this fails when we assign values to variables. The type of
+<code>x</code> is inferred as <code>Int</code>, not <code>3</code>, so
+the types don’t match even though the values are equal.</p>
+</aside>
+</section>
+<section id="checking-integer-equality-at-the-type-level-2"
+class="slide level2">
+<h2>Checking integer equality at the type level 😄</h2>
+<pre class="scala"><code>def checkSame(dimA: Int, dimB: dimA.type): Unit = ()
+val x: 3 = 3
+val y: 3 = 3
+checkSame(x, y) // ok</code></pre>
+<aside class="notes">
+<p>Ideal timing: 02:00</p>
+<p>We can use literal types. Both <code>x2</code> and <code>y3</code>
+have type <code>3</code>, which is a subtype of <code>3.type</code>. But
+literal types only work for constants and are not inferred by
+default.</p>
+</aside>
+</section>
+<section id="checking-integer-equality-at-the-type-level-3"
+class="slide level2">
+<h2>Checking integer equality at the type level 😢</h2>
+<pre class="scala"><code>def checkSame(dimA: Int, dimB: dimA.type): Unit = ()
+def readInt(): Int = ...
+val x: Int = readInt()
+val y = x
+val z = y
+checkSame(y, z) // error</code></pre>
+<aside class="notes">
+<p>Ideal timing: 02:15</p>
+<p>With runtime values, we can’t use literal types. Even though
+<code>z</code> equals <code>x</code> and <code>a</code> equals
+<code>y</code>, the compiler can’t reason symbolically about these
+equalities by default.</p>
+</aside>
+</section>
+<section id="checking-integer-equality-at-the-type-level-4"
+class="slide level2">
+<h2>Checking integer equality at the type level 😁</h2>
+<pre class="scala"><code>def checkSame(dimA: Int, dimB: dimA.type): Unit = ()
+val x: Int = readInt()
+val y: x.type = x
+val z: x.type = x
+checkSame(y, z) // okay</code></pre>
+<aside class="notes">
+<p>Ideal timing: 02:30</p>
+<p>Path-dependent types let us express symbolic equalities. We can say
+<code>z</code> has type <code>x.type</code>, meaning <code>z</code>
+equals <code>x</code>. But the types still don’t match:
+<code>x.type</code> and <code>y.type</code> are different types.</p>
+</aside>
+</section>
+<section id="checking-integer-equality-at-the-type-level-5"
+class="slide level2">
+<h2>Checking integer equality at the type level 😓</h2>
+<pre class="scala"><code>def checkSame(dimA: Int, dimB: dimA.type): Unit = ()
+val x: Int = readInt()
+val y: Int = readInt()
+val z = x + y
+val a = y + x
+checkSame(z, a) // error</code></pre>
+<aside class="notes">
+<p>Ideal timing: 02:45</p>
+<p>When we add arithmetic, things break down. We know <code>x + y</code>
+equals <code>y + x</code> by commutativity, but the compiler
+doesn’t.</p>
+</aside>
+</section>
+<section id="checking-integer-equality-at-the-type-level-6"
+class="slide level2">
+<h2>Checking integer equality at the type level 😲</h2>
+<pre class="scala"><code>def checkSame(dimA: Int, dimB: dimA.type): Unit = ()
+import scala.compiletime.ops.int.+
+val x: 3 = 3
+val y: 5 = 5
+val z: x.type + y.type = x + y
+val a: y.type + x.type = y + x
+checkSame(z, a) // error</code></pre>
+</section>
+<section id="checking-integer-equality-at-the-type-level-7"
+class="slide level2">
+<h2>Checking integer equality at the type level 😭</h2>
+<pre class="scala"><code>import scala.compiletime.ops.int.+
+val x: Int = readInt()
+val y: Int = readInt()
+val z: x.type + y.type = x + y // error
+val a: y.type + x.type = y + x // error
+checkSame(z, a) // error</code></pre>
+<aside class="notes">
+<p>Ideal timing: 03:00</p>
+<p>Type-level arithmetic exists in Scala, but it only works with literal
+types, not runtime values. And even if it worked,
+<code>x.type + y.type</code> is not the same type as
+<code>y.type + x.type</code>.</p>
 </aside>
 </section>
     </div>
   </div>
 
-  <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
+  <script src="https://unpkg.com/reveal.js@^5/dist/reveal.js"></script>
 
   <!-- reveal.js plugins -->
-  <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
-  <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
-  <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
+  <script src="https://unpkg.com/reveal.js@^5/plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^5/plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^5/plugin/zoom/zoom.js"></script>
 
   <script>
 
@@ -146,7 +724,7 @@ does not work, check if your browser stopped the pop-up</p>
       // https://revealjs.com/config/
       Reveal.initialize({
         // Display controls in the bottom right corner
-        controls: true,
+        controls: false,
 
         // Help the user learn the controls by providing hints, for example by
         // bouncing the down arrow when they first encounter a vertical slide
@@ -163,7 +741,7 @@ does not work, check if your browser stopped the pop-up</p>
         progress: true,
 
         // Display the page number of the current slide
-        slideNumber: false,
+        slideNumber: true,
 
         // 'all', 'print', or 'speaker'
         showSlideNumber: 'all',
@@ -192,7 +770,7 @@ does not work, check if your browser stopped the pop-up</p>
         disableLayout: false,
 
         // Vertical centering of slides
-        center: true,
+        center: false,
 
         // Enables touch navigation on devices with touch input
         touch: true,
@@ -293,7 +871,7 @@ does not work, check if your browser stopped the pop-up</p>
         height: 675,
 
         // Factor of the display size that should remain empty around the content
-        margin: 0.14,
+        margin: 0.15,
 
         // reveal.js plugins
         plugins: [

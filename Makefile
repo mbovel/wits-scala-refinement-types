@@ -7,7 +7,7 @@ all: presentation.html presentation.pdf
 		--standalone \
 		--output $@ \
 		--metadata=date:"`date "+%B %e, %Y"`" \
-		--no-highlight \
+		--syntax-highlighting=none \
 		--katex \
 		`# See reveal.js themes here: https://revealjs.com/themes/` \
 		`# Use "black" for dark mode.` \
@@ -19,13 +19,16 @@ all: presentation.html presentation.pdf
 		`# -V center="false"` \
 		-V width="1200" \
 		-V height="675" \
-		-V margin="0.14" \
+		-V margin="0.15" \
 		-V transition="none" \
 		-V header-includes='<link rel="stylesheet" href="custom.css" />' \
 		-V include-after='<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/scala.min.js"></script><script>hljs.highlightAll();</script>' \
 		-V history="true" \
+		-V center="false" \
 		-V navigationMode="linear" \
-		--slide-level=2 \
+		-V slideNumber="true" \
+		-V controls="false" \
+		--slide-level=2
 
 %.pdf: %.html
 	docker run --rm --volume "`pwd`:/slides" --workdir="/slides" --user `id -u`:`id -g` astefanutti/decktape \
