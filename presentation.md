@@ -179,7 +179,7 @@ Ideal timing: 03:00
 <div class="column">
 
 - ["Refinement types for ML" (Freeman & Pfenning, 1991)](https://dl.acm.org/doi/10.1145/113446.113468)
-- [“Liquid Types” (Rondon, Kawaguchi & Jhala, 2008)](https://dl.acm.org/doi/10.1145/1375581.1375604)
+- [“Liquid Types” (Rondon, Kawaguchi & Jhala, 2008)](https://dl.acm.org/doi/10.1145/1375581.1375602)
 - [“Refinement Types for Haskell” (Vazou, Seidel, Jhala, Vytiniotis, Peyton-Jones, 2014)](https://dl.acm.org/doi/10.1145/2628136.2628161)
 - [Liquid Haskell](https://ucsd-progsys.github.io/liquidhaskell/)
 - [Boolean refinement types in F\*](https://fstar-lang.org/tutorial/book/part1/part1_getting_off_the_ground.html#boolean-refinement-types)
@@ -524,7 +524,7 @@ Arithmetic expressions are normalized using standard algebraic properties, for e
 
 <div class="fragment">
 
-Or factorization:
+Or grouping operands with the same constant factor in sums of products:
 
 ```scala
 {v: Int with v == x + 3 * y} <: {v: Int with v == 2 * y + (x + y)}

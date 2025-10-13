@@ -203,7 +203,7 @@ class="slide level2">
 <ul>
 <li><a href="https://dl.acm.org/doi/10.1145/113446.113468">“Refinement
 types for ML” (Freeman &amp; Pfenning, 1991)</a></li>
-<li><a href="https://dl.acm.org/doi/10.1145/1375581.1375604">“Liquid
+<li><a href="https://dl.acm.org/doi/10.1145/1375581.1375602">“Liquid
 Types” (Rondon, Kawaguchi &amp; Jhala, 2008)</a></li>
 <li><a href="https://dl.acm.org/doi/10.1145/2628136.2628161">“Refinement
 Types for Haskell” (Vazou, Seidel, Jhala, Vytiniotis, Peyton-Jones,
@@ -459,7 +459,8 @@ properties, for example commutativity of addition:</p>
 <pre class="scala"><code>{v: Int with v == y + x}     &lt;: {v: Int with v == x + y}</code></pre>
 </div>
 <div class="fragment">
-<p>Or factorization:</p>
+<p>Or grouping operands with the same constant factor in sums of
+products:</p>
 <pre class="scala"><code>{v: Int with v == x + 3 * y} &lt;: {v: Int with v == 2 * y + (x + y)}</code></pre>
 </div>
 </section>
