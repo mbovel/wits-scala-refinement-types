@@ -49,6 +49,8 @@ def zip[A, B](
 
 <div class="fragment">
 
+Ideal timing: 00:45
+
 How can we specify this function to require both lists to have the same size, and return a list of that size?
 
 </div>
@@ -106,7 +108,7 @@ Limitations:
 
 <div class="notes">
 
-Ideal timing: 01:00
+Ideal timing: 01:30
 
 We can use assertions, but they have limitations. The check happens at runtime, so there's overhead. The compiler can't verify the precondition is satisfied. The precondition is not visible in the function type. And assertions don't compose well—imagine passing a list of values that all satisfy some property.
 
@@ -135,7 +137,7 @@ def zip[A, B](
 
 Limitations:
 
-- *Limited reasoning*: only fields, literals and limited constant folding,
+- *Limited reasoning*: only fields, literals and constant folding,
 - *Not inferred*: need manual type annotations, or not typable at all,
 - *Different languages*: term-level vs type-level.
 
@@ -145,9 +147,7 @@ Limitations:
 
 <div class="notes">
 
-Ideal timing: 03:30
-
-Type-level programming in Scala has several limitations. It only works with literals and constant folding—no algebraic reasoning. Types are not inferred by default, and sometimes can't be inferred at all, like for `x + y` above. And the type level and value level use different languages, which is confusing. Not all these limitations are solved by qualified types, but we make progress.
+Ideal timing: 02:15
 
 </div>
 
@@ -167,6 +167,12 @@ def zip[A, B](
 
 The return type means<br/>
 “any value `l` of type `List[(A, B)]` such that `l.size == as.size`”.
+
+</div>
+
+<div class="notes">
+
+Ideal timing: 03:00
 
 </div>
 
@@ -198,9 +204,15 @@ In Scala:
 </div> <!-- .column -->
 </div> <!-- .columns -->
 
+<div class="notes">
+
+Ideal timing: 04:00
+
+</div>
+
 ## Main difference with Liquid Haskell
 
-Liquid haskell is plugin, it runs after type checking.
+Liquid Haskell is a plugin that runs after type checking.
 
 <figure>
 <img src="images/liquid_haskell.jpg" style="width: 60%"/>
@@ -209,7 +221,13 @@ Liquid haskell is plugin, it runs after type checking.
 
 <div class="fragment">
 
-We instead integrate qualified types directly in the Scala type system and compiler.
+In contrast, we integrate qualified types directly into the Scala type system and compiler.
+
+</div>
+
+<div class="notes">
+
+Ideal timing: 04:30
 
 </div>
 
@@ -236,7 +254,7 @@ type IntBox = Box { val value: Int }
 
 <div class="notes">
 
-Ideal timing: 04:30
+Ideal timing: 05:00
 
 A qualified type defines a subset of values. Here `l` is a binder, `List[A]` is the parent type, and `l.nonEmpty` is the predicate or qualifier. This reads "all List[A] values l such that l is non-empty". In other languages, this is called refinement types in Liquid Haskell, boolean refinement types in F*, subset types in Dafny, or subtypes in Lean. We call them logically qualified types in Scala to distinguish from structural refinement types, which refine members like `val` and `def`.
 
@@ -269,7 +287,7 @@ The second version is desugared to the first.
 
 <div class="notes">
 
-Ideal timing: 04:00
+Ideal timing: 05:30
 
 When the value already has a name, like a parameter or val, you can skip the binder. The name is reused in the predicate.
 
@@ -297,7 +315,7 @@ zip(concat(xs, ys), concat(xs, xs)) // error
 
 <div class="notes">
 
-Ideal timing: 05:30
+Ideal timing: 06:15
 
 </div>
 
@@ -329,7 +347,13 @@ The predicate language is restricted to a fragment of Scala consisting of consta
 
 <div class="fragment">
 
-Purity of functions is currently not enforced. Should it?
+Purity of functions is currently not enforced. Should it be?
+
+</div>
+
+<div class="notes">
+
+Ideal timing: 07:15
 
 </div>
 
@@ -342,6 +366,12 @@ For backward compatibility and performance reasons, qualified types are not infe
 val x: Int = readInt()
 val y /* : Int */ = x + 1
 ```
+
+<div class="notes">
+
+Ideal timing: 08:00
+
+</div>
 
 
 ## Selfification
@@ -365,7 +395,7 @@ val z: Int with (z == x + f(x)) = x + f(x)
 
 <div class="notes">
 
-Ideal timing: 06:00
+Ideal timing: 08:30
 
 </div>
 
@@ -389,9 +419,10 @@ type ID = {s: String with s.matches(idRegex)}
 </div>
 
 
+
 <div class="notes">
 
-Ideal timing: 06:30
+Ideal timing: 09:15
 
 When the compiler can't verify a predicate statically, you can use runtime checks. Pattern matching checks the predicate at runtime.
 
@@ -399,7 +430,7 @@ When the compiler can't verify a predicate statically, you can use runtime check
 
 ## Runtime checks: `.runtimeChecked`
 
-Can also use `.runtimeChecked` ([SIP-57](https://docs.scala-lang.org/sips/replace-nonsensical-unchecked-annotation.html)) when the check must always pass:
+You can also use `.runtimeChecked` ([SIP-57](https://docs.scala-lang.org/sips/replace-nonsensical-unchecked-annotation.html)) when the check must always pass:
 
 ```scala
 val id: ID = "a2e7-e89b".runtimeChecked
@@ -423,13 +454,20 @@ Note: like with other types, you can also use `.asInstanceOf[ID]` directly to sk
 
 </div>
 
+<div class="notes">
+
+Ideal timing: 10:00
+
+</div>
+
+
 ## Runtime checks: `List.collect`
 
 Scala type parameters are _erased_ at runtime, so we cannot match on a `List[T]`.
 
 <div class="fragment">
 
-However, we can use `.collect` to convert a list easily instead:
+However, we can use `.collect` to filter and convert a list:
 
 ```scala
 type Pos = { v: Int with v >= 0 }
@@ -457,7 +495,7 @@ A solver is needed to check logical implication (2.).
 
 We developed a lightweight custom solver that combines several techniques:
 
-- constant-folding,
+- constant folding,
 - normalization,
 - unfolding,
 - and equality reasoning.
@@ -466,13 +504,13 @@ We developed a lightweight custom solver that combines several techniques:
 
 <div class="notes">
 
-Ideal timing: 07:00
+Ideal timing: 17:00
 
 To check if one qualified type is a subtype of another, the compiler checks if the parent types are related, and if the first predicate implies the second. Our implementation uses a lightweight custom solver that combines several techniques.
 
 </div>
 
-## Subtyping: constant-folding
+## Subtyping: constant folding
 
 ```scala
 {v: Int with v == 1 + 1}     <: {v: Int with v == 2}
@@ -578,7 +616,7 @@ extension [T](list: List[T])
 
 <div class="fragment">
 
-Would be nice to be able to modularize the “range” concept:
+To modularize the “range” concept, we could introduce term-parameterized types:
 
 ```scala
 type Range(from: Int, to: Int) = {v: Int with v >= from && v < to}
@@ -609,13 +647,13 @@ if x > 0 then
 
 </div>
 
-## Future work: integration with external SMT solvers
+## Future work: integration with SMT solvers
 
 Our solver is lightweight 👍 but incomplete 👎.
 
 <div class="fragment">
 
-In particular, it cannot handle orders yet, for example it cannot prove:
+In particular, it cannot handle ordering relations yet, for example it cannot prove:
 
 ```scala
 {v: Int with v > 2} <: {v: Int with v > 0}
@@ -714,8 +752,6 @@ checkSame(3, 4) // error
 
 <div class="notes">
 
-Ideal timing: 01:30
-
 We can use path-dependent types. Here, `dimB` must have type `dimA.type`, meaning it must be the same value as `dimA`. This works for simple cases.
 
 </div>
@@ -731,8 +767,6 @@ checkSame(x, y) // error
 
 <div class="notes">
 
-Ideal timing: 01:45
-
 But this fails when we assign values to variables. The type of `x` is inferred as `Int`, not `3`, so the types don't match even though the values are equal.
 
 </div>
@@ -747,8 +781,6 @@ checkSame(x, y) // ok
 ```
 
 <div class="notes">
-
-Ideal timing: 02:00
 
 We can use literal types. Both `x2` and `y3` have type `3`, which is a subtype of `3.type`. But literal types only work for constants and are not inferred by default.
 
@@ -767,8 +799,6 @@ checkSame(y, z) // error
 
 <div class="notes">
 
-Ideal timing: 02:15
-
 With runtime values, we can't use literal types. Even though `z` equals `x` and `a` equals `y`, the compiler can't reason symbolically about these equalities by default.
 
 </div>
@@ -784,8 +814,6 @@ checkSame(y, z) // okay
 ```
 
 <div class="notes">
-
-Ideal timing: 02:30
 
 Path-dependent types let us express symbolic equalities. We can say `z` has type `x.type`, meaning `z` equals `x`. But the types still don't match: `x.type` and `y.type` are different types.
 
@@ -803,8 +831,6 @@ checkSame(z, a) // error
 ```
 
 <div class="notes">
-
-Ideal timing: 02:45
 
 When we add arithmetic, things break down. We know `x + y` equals `y + x` by commutativity, but the compiler doesn't.
 
@@ -835,8 +861,6 @@ checkSame(z, a) // error
 ```
 
 <div class="notes">
-
-Ideal timing: 03:00
 
 Type-level arithmetic exists in Scala, but it only works with literal types, not runtime values. And even if it worked, `x.type + y.type` is not the same type as `y.type + x.type`.
 

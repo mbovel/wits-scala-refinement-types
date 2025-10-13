@@ -94,6 +94,7 @@ checks in his bachelor’s thesis.</p>
 ): List[(A, B)] =
   ...</code></pre>
 <div class="fragment">
+<p>Ideal timing: 00:45</p>
 <p>How can we specify this function to require both lists to have the
 same size, and return a list of that size?</p>
 </div>
@@ -142,7 +143,7 @@ inputs,</li>
 </div>
 <p><!-- .columns --></p>
 <aside class="notes">
-<p>Ideal timing: 01:00</p>
+<p>Ideal timing: 01:30</p>
 <p>We can use assertions, but they have limitations. The check happens
 at runtime, so there’s overhead. The compiler can’t verify the
 precondition is satisfied. The precondition is not visible in the
@@ -166,8 +167,8 @@ of values that all satisfy some property.</p>
 </div><div class="column fragment">
 <p>Limitations:</p>
 <ul>
-<li><em>Limited reasoning</em>: only fields, literals and limited
-constant folding,</li>
+<li><em>Limited reasoning</em>: only fields, literals and constant
+folding,</li>
 <li><em>Not inferred</em>: need manual type annotations, or not typable
 at all,</li>
 <li><em>Different languages</em>: term-level vs type-level.</li>
@@ -176,13 +177,7 @@ at all,</li>
 </div>
 <p><!-- .columns --></p>
 <aside class="notes">
-<p>Ideal timing: 03:30</p>
-<p>Type-level programming in Scala has several limitations. It only
-works with literals and constant folding—no algebraic reasoning. Types
-are not inferred by default, and sometimes can’t be inferred at all,
-like for <code>x + y</code> above. And the type level and value level
-use different languages, which is confusing. Not all these limitations
-are solved by qualified types, but we make progress.</p>
+<p>Ideal timing: 02:15</p>
 </aside>
 </section>
 <section id="specify-using-logically-qualified-types"
@@ -197,6 +192,9 @@ class="slide level2">
 <p>The return type means<br/> “any value <code>l</code> of type
 <code>List[(A, B)]</code> such that <code>l.size == as.size</code>”.</p>
 </div>
+<aside class="notes">
+<p>Ideal timing: 03:00</p>
+</aside>
 </section>
 <section id="in-other-languages" class="slide level2">
 <h2>In other languages</h2>
@@ -239,10 +237,13 @@ Fromentin</a></li>
 </div><p><!-- .column --></p>
 </div>
 <p><!-- .columns --></p>
+<aside class="notes">
+<p>Ideal timing: 04:00</p>
+</aside>
 </section>
 <section id="main-difference-with-liquid-haskell" class="slide level2">
 <h2>Main difference with Liquid Haskell</h2>
-<p>Liquid haskell is plugin, it runs after type checking.</p>
+<p>Liquid Haskell is a plugin that runs after type checking.</p>
 <figure>
 <img src="images/liquid_haskell.jpg" style="width: 60%"/>
 <figcaption>
@@ -252,9 +253,12 @@ Demo</a>
 </figcaption>
 </figure>
 <div class="fragment">
-<p>We instead integrate qualified types directly in the Scala type
-system and compiler.</p>
+<p>In contrast, we integrate qualified types directly into the Scala
+type system and compiler.</p>
 </div>
+<aside class="notes">
+<p>Ideal timing: 04:30</p>
+</aside>
 </section>
 <section id="syntax" class="slide level2">
 <h2>Syntax</h2>
@@ -271,7 +275,7 @@ types:</p>
 type IntBox = Box { val value: Int }</code></pre>
 </div>
 <aside class="notes">
-<p>Ideal timing: 04:30</p>
+<p>Ideal timing: 05:00</p>
 <p>A qualified type defines a subset of values. Here <code>l</code> is a
 binder, <code>List[A]</code> is the parent type, and
 <code>l.nonEmpty</code> is the predicate or qualifier. This reads “all
@@ -295,7 +299,7 @@ types, which refine members like <code>val</code> and
 <p>The second version is desugared to the first.</p>
 </div>
 <aside class="notes">
-<p>Ideal timing: 04:00</p>
+<p>Ideal timing: 05:30</p>
 <p>When the value already has a name, like a parameter or val, you can
 skip the binder. The name is reused in the predicate.</p>
 </aside>
@@ -311,7 +315,7 @@ val ys: List[Int] = ...
 zip(concat(xs, ys), concat(ys, xs))
 zip(concat(xs, ys), concat(xs, xs)) // error</code></pre>
 <aside class="notes">
-<p>Ideal timing: 05:30</p>
+<p>Ideal timing: 06:15</p>
 </aside>
 </section>
 <section id="what-are-valid-predicates" class="slide level2">
@@ -331,8 +335,11 @@ consisting of constants, stable identifiers, field selections over
 constructors of case classes without initializers.</p>
 </div>
 <div class="fragment">
-<p>Purity of functions is currently not enforced. Should it?</p>
+<p>Purity of functions is currently not enforced. Should it be?</p>
 </div>
+<aside class="notes">
+<p>Ideal timing: 07:15</p>
+</aside>
 </section>
 <section id="how-to-introduce-qualified-types" class="slide level2">
 <h2>How to introduce qualified types?</h2>
@@ -341,6 +348,9 @@ are not inferred from terms by default. The wider type is inferred
 instead:</p>
 <pre class="scala"><code>val x: Int = readInt()
 val y /* : Int */ = x + 1</code></pre>
+<aside class="notes">
+<p>Ideal timing: 08:00</p>
+</aside>
 </section>
 <section id="selfification" class="slide level2">
 <h2>Selfification</h2>
@@ -354,7 +364,7 @@ val y: Int with (y == x + 1) = x + 1</code></pre>
 val z: Int with (z == x + f(x)) = x + f(x)</code></pre>
 </div>
 <aside class="notes">
-<p>Ideal timing: 06:00</p>
+<p>Ideal timing: 08:30</p>
 </aside>
 </section>
 <section id="runtime-checks" class="slide level2">
@@ -369,14 +379,14 @@ type ID = {s: String with s.matches(idRegex)}</code></pre>
     case id     =&gt; // didn&#39;t match</code></pre>
 </div>
 <aside class="notes">
-<p>Ideal timing: 06:30</p>
+<p>Ideal timing: 09:15</p>
 <p>When the compiler can’t verify a predicate statically, you can use
 runtime checks. Pattern matching checks the predicate at runtime.</p>
 </aside>
 </section>
 <section id="runtime-checks-.runtimechecked" class="slide level2">
 <h2>Runtime checks: <code>.runtimeChecked</code></h2>
-<p>Can also use <code>.runtimeChecked</code> (<a
+<p>You can also use <code>.runtimeChecked</code> (<a
 href="https://docs.scala-lang.org/sips/replace-nonsensical-unchecked-annotation.html">SIP-57</a>)
 when the check must always pass:</p>
 <pre class="scala"><code>val id: ID = &quot;a2e7-e89b&quot;.runtimeChecked</code></pre>
@@ -391,14 +401,17 @@ when the check must always pass:</p>
 <code>.asInstanceOf[ID]</code> directly to skip the check
 altogether.</p>
 </div>
+<aside class="notes">
+<p>Ideal timing: 10:00</p>
+</aside>
 </section>
 <section id="runtime-checks-list.collect" class="slide level2">
 <h2>Runtime checks: <code>List.collect</code></h2>
 <p>Scala type parameters are <em>erased</em> at runtime, so we cannot
 match on a <code>List[T]</code>.</p>
 <div class="fragment">
-<p>However, we can use <code>.collect</code> to convert a list easily
-instead:</p>
+<p>However, we can use <code>.collect</code> to filter and convert a
+list:</p>
 <pre class="scala"><code>type Pos = { v: Int with v &gt;= 0 }
 
 val xs = List(-1,2,-2,1)
@@ -421,14 +434,14 @@ xs.collect { case x: Pos =&gt; x } : List[Pos]</code></pre>
 <p>We developed a lightweight custom solver that combines several
 techniques:</p>
 <ul>
-<li>constant-folding,</li>
+<li>constant folding,</li>
 <li>normalization,</li>
 <li>unfolding,</li>
 <li>and equality reasoning.</li>
 </ul>
 </div>
 <aside class="notes">
-<p>Ideal timing: 07:00</p>
+<p>Ideal timing: 17:00</p>
 <p>To check if one qualified type is a subtype of another, the compiler
 checks if the parent types are related, and if the first predicate
 implies the second. Our implementation uses a lightweight custom solver
@@ -436,7 +449,7 @@ that combines several techniques.</p>
 </aside>
 </section>
 <section id="subtyping-constant-folding" class="slide level2">
-<h2>Subtyping: constant-folding</h2>
+<h2>Subtyping: constant folding</h2>
 <pre class="scala"><code>{v: Int with v == 1 + 1}     &lt;: {v: Int with v == 2}</code></pre>
 </section>
 <section id="subtyping-normalization" class="slide level2">
@@ -499,7 +512,8 @@ documentation).</p>
 <pre class="scala"><code>extension [T](list: List[T])
   def get(index: Int with index &gt;= 0 &amp;&amp; index &lt; list.size): T = ...</code></pre>
 <div class="fragment">
-<p>Would be nice to be able to modularize the “range” concept:</p>
+<p>To modularize the “range” concept, we could introduce
+term-parameterized types:</p>
 <pre class="scala"><code>type Range(from: Int, to: Int) = {v: Int with v &gt;= from &amp;&amp; v &lt; to}
 extension [T](list: List[T])
   def get(index: Range(0, list.size)): T = ...</code></pre>
@@ -517,13 +531,13 @@ extension [T](list: List[T])
   x: {v: Int with v &gt; 0}</code></pre>
 </div>
 </section>
-<section id="future-work-integration-with-external-smt-solvers"
+<section id="future-work-integration-with-smt-solvers"
 class="slide level2">
-<h2>Future work: integration with external SMT solvers</h2>
+<h2>Future work: integration with SMT solvers</h2>
 <p>Our solver is lightweight 👍 but incomplete 👎.</p>
 <div class="fragment">
-<p>In particular, it cannot handle orders yet, for example it cannot
-prove:</p>
+<p>In particular, it cannot handle ordering relations yet, for example
+it cannot prove:</p>
 <pre class="scala"><code>{v: Int with v &gt; 2} &lt;: {v: Int with v &gt; 0}</code></pre>
 </div>
 <div class="fragment">
@@ -612,7 +626,6 @@ class="slide level2">
 checkSame(3, 3) // ok
 checkSame(3, 4) // error</code></pre>
 <aside class="notes">
-<p>Ideal timing: 01:30</p>
 <p>We can use path-dependent types. Here, <code>dimB</code> must have
 type <code>dimA.type</code>, meaning it must be the same value as
 <code>dimA</code>. This works for simple cases.</p>
@@ -626,7 +639,6 @@ val x = 3
 val y = 3
 checkSame(x, y) // error</code></pre>
 <aside class="notes">
-<p>Ideal timing: 01:45</p>
 <p>But this fails when we assign values to variables. The type of
 <code>x</code> is inferred as <code>Int</code>, not <code>3</code>, so
 the types don’t match even though the values are equal.</p>
@@ -640,7 +652,6 @@ val x: 3 = 3
 val y: 3 = 3
 checkSame(x, y) // ok</code></pre>
 <aside class="notes">
-<p>Ideal timing: 02:00</p>
 <p>We can use literal types. Both <code>x2</code> and <code>y3</code>
 have type <code>3</code>, which is a subtype of <code>3.type</code>. But
 literal types only work for constants and are not inferred by
@@ -657,7 +668,6 @@ val y = x
 val z = y
 checkSame(y, z) // error</code></pre>
 <aside class="notes">
-<p>Ideal timing: 02:15</p>
 <p>With runtime values, we can’t use literal types. Even though
 <code>z</code> equals <code>x</code> and <code>a</code> equals
 <code>y</code>, the compiler can’t reason symbolically about these
@@ -673,7 +683,6 @@ val y: x.type = x
 val z: x.type = x
 checkSame(y, z) // okay</code></pre>
 <aside class="notes">
-<p>Ideal timing: 02:30</p>
 <p>Path-dependent types let us express symbolic equalities. We can say
 <code>z</code> has type <code>x.type</code>, meaning <code>z</code>
 equals <code>x</code>. But the types still don’t match:
@@ -690,7 +699,6 @@ val z = x + y
 val a = y + x
 checkSame(z, a) // error</code></pre>
 <aside class="notes">
-<p>Ideal timing: 02:45</p>
 <p>When we add arithmetic, things break down. We know <code>x + y</code>
 equals <code>y + x</code> by commutativity, but the compiler
 doesn’t.</p>
@@ -717,7 +725,6 @@ val z: x.type + y.type = x + y // error
 val a: y.type + x.type = y + x // error
 checkSame(z, a) // error</code></pre>
 <aside class="notes">
-<p>Ideal timing: 03:00</p>
 <p>Type-level arithmetic exists in Scala, but it only works with literal
 types, not runtime values. And even if it worked,
 <code>x.type + y.type</code> is not the same type as
