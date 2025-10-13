@@ -3,9 +3,7 @@ title: Logically Qualified Types<br/>for Scala 3
 author: "[Matt Bovel](mailto:matthieu@bovel.net) @[LAMP](https://www.epfl.ch/labs/lamp/)/[LARA](https://lara.epfl.ch/w/), [EPFL](https://www.epfl.ch/fr/)"
 ---
 
-
 ## Introduction
-
 
 I am [Matt Bovel](mailto:matthieu@bovel.net) ([@mbovel](https://github.com/mbovel)).
 
@@ -30,7 +28,7 @@ I am Matt Bovel, a PhD student at EPFL in Switzerland, between two labs: LAMP, l
 
 What I present today has been done in collaboration with Quentin Bernet, who designed syntax and runtime checks for qualified types in his master's thesis, and Valentin Schneeberger, who worked on runtime checks in his bachelor's thesis.
 
-</div> 
+</div>
 
 ## Motivating example: Safe list zip
 
@@ -97,10 +95,10 @@ def zip[A, B](
 
 Limitations:
 
-- *Runtime overhead*: checked at runtime, not compile time,
-- *No static guarantees*: only checked for specific inputs,
-- *Not part of the API*: not visible in function type,
-- *Hard to compose*: cannot be passed as type argument.
+- _Runtime overhead_: checked at runtime, not compile time,
+- _No static guarantees_: only checked for specific inputs,
+- _Not part of the API_: not visible in function type,
+- _Hard to compose_: cannot be passed as type argument.
 
 </div> <!-- .column -->
 
@@ -110,7 +108,7 @@ Limitations:
 
 Ideal timing: 01:30
 
-We can use assertions, but they have limitations. The check happens at runtime, so there's overhead. The compiler can't verify the precondition is satisfied. The precondition is not visible in the function type. And assertions don't compose well—imagine passing a list of values that all satisfy some property.
+We can use assertions, but they have limitations. The check happens at runtime, so there's overhead. The compiler can't verify the precondition is always satisfied. The precondition is not visible in the function type. And assertions don't compose well—imagine passing a list of values that all satisfy some property.
 
 </div>
 
@@ -137,9 +135,9 @@ def zip[A, B](
 
 Limitations:
 
-- *Limited reasoning*: only fields, literals and constant folding,
-- *Not inferred*: need manual type annotations, or not typable at all,
-- *Different languages*: term-level vs type-level.
+- _Limited reasoning_: only fields, literals and constant folding,
+- _Not inferred_: need manual type annotations, or not typable at all,
+- _Different languages_: term-level vs type-level.
 
 </div> <!-- .column -->
 
@@ -152,7 +150,6 @@ Ideal timing: 02:15
 </div>
 
 ## Specify using logically qualified types ! 🤩
-
 
 Introducing logically qualified types:
 
@@ -185,7 +182,7 @@ Ideal timing: 03:00
 - [“Liquid Types” (Rondon, Kawaguchi & Jhala, 2008)](https://dl.acm.org/doi/10.1145/1375581.1375604)
 - [“Refinement Types for Haskell” (Vazou, Seidel, Jhala, Vytiniotis, Peyton-Jones, 2014)](https://dl.acm.org/doi/10.1145/2628136.2628161)
 - [Liquid Haskell](https://ucsd-progsys.github.io/liquidhaskell/)
-- [Boolean refinement types in F*](https://fstar-lang.org/tutorial/book/part1/part1_getting_off_the_ground.html#boolean-refinement-types)
+- [Boolean refinement types in F\*](https://fstar-lang.org/tutorial/book/part1/part1_getting_off_the_ground.html#boolean-refinement-types)
 - [Subset types in Dafny](https://dafny.org/latest/DafnyRef/DafnyRef#sec-subset-types)
 - [Subtypes in Lean](https://lean-lang.org/doc/reference/latest/Basic-Types/Subtypes/)
 
@@ -256,7 +253,7 @@ type IntBox = Box { val value: Int }
 
 Ideal timing: 05:00
 
-A qualified type defines a subset of values. Here `l` is a binder, `List[A]` is the parent type, and `l.nonEmpty` is the predicate or qualifier. This reads "all List[A] values l such that l is non-empty". In other languages, this is called refinement types in Liquid Haskell, boolean refinement types in F*, subset types in Dafny, or subtypes in Lean. We call them logically qualified types in Scala to distinguish from structural refinement types, which refine members like `val` and `def`.
+A qualified type defines a subset of values. Here `l` is a binder, `List[A]` is the parent type, and `l.nonEmpty` is the predicate or qualifier. This reads "all List[A] values l such that l is non-empty". We call them logically qualified types in Scala to distinguish from structural refinement types, which refine members like `val` and `def`.
 
 </div>
 
@@ -271,7 +268,6 @@ def zip[A, B](as: List[A], bs: {bs: List[B] with bs.size == as.size})
 <div class="fragment">
 
 We can omit it:
-
 
 ```scala
 def zip[A, B](as: List[A], bs: List[B] with bs.size == as.size)
@@ -294,7 +290,6 @@ When the value already has a name, like a parameter or val, you can skip the bin
 </div>
 
 ## More list API examples 🥳
-
 
 ```scala
 def zip[A, B](as: List[A], bs: List[B] with bs.size == as.size):
@@ -357,7 +352,6 @@ Ideal timing: 07:15
 
 </div>
 
-
 ## How to introduce qualified types?
 
 For backward compatibility and performance reasons, qualified types are not inferred from terms by default. The wider type is inferred instead:
@@ -372,7 +366,6 @@ val y /* : Int */ = x + 1
 Ideal timing: 08:00
 
 </div>
-
 
 ## Selfification
 
@@ -457,7 +450,6 @@ Note: like with other types, you can also use `.asInstanceOf[ID]` directly to sk
 Ideal timing: 10:00
 
 </div>
-
 
 ## Runtime checks: `List.collect`
 
@@ -679,6 +671,7 @@ In particular, it cannot handle ordering relations yet, for example it cannot pr
 ```scala
 {v: Int with v > 2} <: {v: Int with v > 0}
 ```
+
 </div>
 
 <div class="fragment">
@@ -711,7 +704,7 @@ For this and for more complex predicates, we could integrate with an external SM
 <figure style="text-align: center">
 <img src="images/qualified_type.png" alt="qualified types" style="width: 45%">
 <figcaption><em>Un type qualifié</em>, by Marina Granados Castro</figcaption>
-</figure> 
+</figure>
 
 </div> <!-- .column -->
 </div> <!-- .columns -->
@@ -738,7 +731,6 @@ def f(x: Int with x == 42, y: Int with y == -42): Unit =
 ```
 
 </div>
-
 
 ## Checking integer equality at the type level
 
@@ -845,7 +837,6 @@ val z: x.type + y.type = x + y
 val a: y.type + x.type = y + x
 checkSame(z, a) // error
 ```
-
 
 ## Checking integer equality at the type level 😭
 
