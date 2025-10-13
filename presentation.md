@@ -45,14 +45,6 @@ def zip[A, B](
   ...
 ```
 
-<div class="fragment">
-
-Ideal timing: 00:45
-
-How can we specify this function to require both lists to have the same size, and return a list of that size?
-
-</div>
-
 </div>
 <div class="column">
 
@@ -67,9 +59,11 @@ How can we specify this function to require both lists to have the same size, an
 
 <div class="notes">
 
+Ideal timing: 00:45
+
 In the Scala standard library, the result is truncated to the shorter list.
 
-But what if we want to ensure they have the same size before zipping?
+How can we specify this function to require both lists to have the same size, and return a list of that size?
 
 </div>
 

@@ -93,11 +93,6 @@ checks in his bachelor’s thesis.</p>
   bs: List[B]
 ): List[(A, B)] =
   ...</code></pre>
-<div class="fragment">
-<p>Ideal timing: 00:45</p>
-<p>How can we specify this function to require both lists to have the
-same size, and return a list of that size?</p>
-</div>
 </div><div class="column">
 <figure style="text-align: right">
 <img src="images/zip.jpg" alt="zip" style="width: 82%">
@@ -111,10 +106,11 @@ Pham</a>
 </div>
 <p><!-- .columns --></p>
 <aside class="notes">
+<p>Ideal timing: 00:45</p>
 <p>In the Scala standard library, the result is truncated to the shorter
 list.</p>
-<p>But what if we want to ensure they have the same size before
-zipping?</p>
+<p>How can we specify this function to require both lists to have the
+same size, and return a list of that size?</p>
 </aside>
 </section>
 <section id="specify-using-assertions" class="slide level2">
