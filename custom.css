@@ -8,6 +8,18 @@
     --r-link-color-hover: #1e366c;
 }
 
+#title-slide::after {
+    content: "";
+    background-image: url('images/qr.png');
+    background-size: contain;
+    position: absolute;
+    display: block;
+    top: 8em;
+    right: 5em;
+    width: 10em;
+    height: 10em;
+}
+
 .reveal {
     font-weight: 300;
     color: #444;
