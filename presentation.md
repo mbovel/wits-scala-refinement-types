@@ -709,6 +709,8 @@ For this and for more complex predicates, we could integrate with an external SM
 </div> <!-- .column -->
 </div> <!-- .columns -->
 
+## Backup/outdated slides
+
 ## Bonus: works with implicit resolution
 
 <div style="font-size: 0.7em;">

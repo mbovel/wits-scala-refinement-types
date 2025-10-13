@@ -146,7 +146,7 @@ inputs,</li>
 <p>Ideal timing: 01:30</p>
 <p>We can use assertions, but they have limitations. The check happens
 at runtime, so there’s overhead. The compiler can’t verify the
-precondition is satisfied. The precondition is not visible in the
+precondition is always satisfied. The precondition is not visible in the
 function type. And assertions don’t compose well—imagine passing a list
 of values that all satisfy some property.</p>
 </aside>
@@ -279,9 +279,7 @@ type IntBox = Box { val value: Int }</code></pre>
 <p>A qualified type defines a subset of values. Here <code>l</code> is a
 binder, <code>List[A]</code> is the parent type, and
 <code>l.nonEmpty</code> is the predicate or qualifier. This reads “all
-List[A] values l such that l is non-empty”. In other languages, this is
-called refinement types in Liquid Haskell, boolean refinement types in
-F*, subset types in Dafny, or subtypes in Lean. We call them logically
+List[A] values l such that l is non-empty”. We call them logically
 qualified types in Scala to distinguish from structural refinement
 types, which refine members like <code>val</code> and
 <code>def</code>.</p>
@@ -599,6 +597,9 @@ SMT integration.</li>
 </div><p><!-- .column --></p>
 </div>
 <p><!-- .columns --></p>
+</section>
+<section id="backupoutdated-slides" class="slide level2">
+<h2>Backup/outdated slides</h2>
 </section>
 <section id="bonus-works-with-implicit-resolution" class="slide level2">
 <h2>Bonus: works with implicit resolution</h2>
