@@ -198,6 +198,21 @@ In Scala:
 </div> <!-- .column -->
 </div> <!-- .columns -->
 
+## Main difference with Liquid Haskell
+
+Liquid haskell is plugin, it runs after type checking.
+
+<figure>
+<img src="images/liquid_haskell.jpg" style="width: 60%"/>
+<figcaption>Screenshot from the [Liquid Haskell Demo](https://liquidhaskell.goto.ucsd.edu/index.html)</figcaption>
+</figure>
+
+<div class="fragment">
+
+We instead integrate qualified types directly in the Scala type system and compiler.
+
+</div>
+
 ## Syntax
 
 ```scala
@@ -588,7 +603,7 @@ x match
 Could also work with `if` conditions:
 
 ```scala
-if (x > 0) then
+if x > 0 then
   x: {v: Int with v > 0}
 ```
 

@@ -240,6 +240,22 @@ Fromentin</a></li>
 </div>
 <p><!-- .columns --></p>
 </section>
+<section id="main-difference-with-liquid-haskell" class="slide level2">
+<h2>Main difference with Liquid Haskell</h2>
+<p>Liquid haskell is plugin, it runs after type checking.</p>
+<figure>
+<img src="images/liquid_haskell.jpg" style="width: 60%"/>
+<figcaption>
+Screenshot from the <a
+href="https://liquidhaskell.goto.ucsd.edu/index.html">Liquid Haskell
+Demo</a>
+</figcaption>
+</figure>
+<div class="fragment">
+<p>We instead integrate qualified types directly in the Scala type
+system and compiler.</p>
+</div>
+</section>
 <section id="syntax" class="slide level2">
 <h2>Syntax</h2>
 <pre class="scala"><code>type NonEmptyList[A] = { l: List[A] with l.nonEmpty }</code></pre>
@@ -497,7 +513,7 @@ extension [T](list: List[T])
     x: {v: Int with v &gt; 0}</code></pre>
 <div class="fragment">
 <p>Could also work with <code>if</code> conditions:</p>
-<pre class="scala"><code>if (x &gt; 0) then
+<pre class="scala"><code>if x &gt; 0 then
   x: {v: Int with v &gt; 0}</code></pre>
 </div>
 </section>
