@@ -418,8 +418,6 @@ type ID = {s: String with s.matches(idRegex)}
 
 </div>
 
-
-
 <div class="notes">
 
 Ideal timing: 09:15
@@ -647,25 +645,6 @@ if x > 0 then
 
 </div>
 
-## Future work: integration with SMT solvers
-
-Our solver is lightweight 👍 but incomplete 👎.
-
-<div class="fragment">
-
-In particular, it cannot handle ordering relations yet, for example it cannot prove:
-
-```scala
-{v: Int with v > 2} <: {v: Int with v > 0}
-```
-</div>
-
-<div class="fragment">
-
-For this and for more complex predicates, we could integrate with an external SMT solver like [Z3](https://microsoft.github.io/z3guide/docs/logic/intro/), [CVC5](https://cvc5.github.io/), or [Princess](https://philipp.ruemmer.org/princess.shtml) _for casting only_, so that we don't pay the potential performance cost everywhere.
-
-</div>
-
 ## Future work: flow-sensitive typing
 
 Crucially, this would be required for "GADT-like" reasoning with qualified types:
@@ -686,6 +665,25 @@ def myLength(xs: MyList[Int]): Int =
       // Add assumption xs == MyList.Cons(?, xs1)
       1 + myLength(xs1)
 ```
+
+</div>
+
+## Future work: integration with SMT solvers
+
+Our solver is lightweight 👍 but incomplete 👎.
+
+<div class="fragment">
+
+In particular, it cannot handle ordering relations yet, for example it cannot prove:
+
+```scala
+{v: Int with v > 2} <: {v: Int with v > 0}
+```
+</div>
+
+<div class="fragment">
+
+For this and for more complex predicates, we could integrate with an external SMT solver like [Z3](https://microsoft.github.io/z3guide/docs/logic/intro/), [CVC5](https://cvc5.github.io/), or [Princess](https://philipp.ruemmer.org/princess.shtml) _for casting only_, so that we don't pay the potential performance cost everywhere.
 
 </div>
 

@@ -531,25 +531,6 @@ extension [T](list: List[T])
   x: {v: Int with v &gt; 0}</code></pre>
 </div>
 </section>
-<section id="future-work-integration-with-smt-solvers"
-class="slide level2">
-<h2>Future work: integration with SMT solvers</h2>
-<p>Our solver is lightweight 👍 but incomplete 👎.</p>
-<div class="fragment">
-<p>In particular, it cannot handle ordering relations yet, for example
-it cannot prove:</p>
-<pre class="scala"><code>{v: Int with v &gt; 2} &lt;: {v: Int with v &gt; 0}</code></pre>
-</div>
-<div class="fragment">
-<p>For this and for more complex predicates, we could integrate with an
-external SMT solver like <a
-href="https://microsoft.github.io/z3guide/docs/logic/intro/">Z3</a>, <a
-href="https://cvc5.github.io/">CVC5</a>, or <a
-href="https://philipp.ruemmer.org/princess.shtml">Princess</a> <em>for
-casting only</em>, so that we don’t pay the potential performance cost
-everywhere.</p>
-</div>
-</section>
 <section id="future-work-flow-sensitive-typing-1" class="slide level2">
 <h2>Future work: flow-sensitive typing</h2>
 <p>Crucially, this would be required for “GADT-like” reasoning with
@@ -567,6 +548,25 @@ def myLength(xs: MyList[Int]): Int =
     case MyList.Cons(_, xs1) =&gt;
       // Add assumption xs == MyList.Cons(?, xs1)
       1 + myLength(xs1)</code></pre>
+</div>
+</section>
+<section id="future-work-integration-with-smt-solvers"
+class="slide level2">
+<h2>Future work: integration with SMT solvers</h2>
+<p>Our solver is lightweight 👍 but incomplete 👎.</p>
+<div class="fragment">
+<p>In particular, it cannot handle ordering relations yet, for example
+it cannot prove:</p>
+<pre class="scala"><code>{v: Int with v &gt; 2} &lt;: {v: Int with v &gt; 0}</code></pre>
+</div>
+<div class="fragment">
+<p>For this and for more complex predicates, we could integrate with an
+external SMT solver like <a
+href="https://microsoft.github.io/z3guide/docs/logic/intro/">Z3</a>, <a
+href="https://cvc5.github.io/">CVC5</a>, or <a
+href="https://philipp.ruemmer.org/princess.shtml">Princess</a> <em>for
+casting only</em>, so that we don’t pay the potential performance cost
+everywhere.</p>
 </div>
 </section>
 <section id="conclusion" class="slide level2">
