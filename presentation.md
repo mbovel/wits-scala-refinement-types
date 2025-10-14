@@ -81,7 +81,7 @@ def zip[A, B](
 ) : List[(A, B)] = {
   require(as.size == bs.size)
   ...
-}.ensure(_.size == as.size)
+}.ensuring(_.size == as.size)
 ```
 
 </div>
@@ -563,10 +563,10 @@ This is implemented using an E-Graph-like data structure.
 
 ## Subtyping with other Scala types
 
-Singleton qualified types are subtypes of literal types:
+Literal types are subtype of singleton qualified types:
 
 ```scala
-{v: Int with v == 3} <: 3
+3 <: {v: Int with v == 3}
 ```
 
 <div class="fragment">

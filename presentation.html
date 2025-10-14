@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="author" content="Matt Bovel @LAMP/LARA, EPFL">
-  <meta name="dcterms.date" content="2025-10-13">
+  <meta name="dcterms.date" content="2025-10-14">
   <title>Logically Qualified Types for Scala 3</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -47,7 +47,7 @@
 @<a href="https://www.epfl.ch/labs/lamp/">LAMP</a>/<a
 href="https://lara.epfl.ch/w/">LARA</a>, <a
 href="https://www.epfl.ch/fr/">EPFL</a></p>
-  <p class="date">October 13, 2025</p>
+  <p class="date">October 14, 2025</p>
 </section>
 
 <section id="introduction" class="slide level2">
@@ -124,7 +124,7 @@ same size, and return a list of that size?</p>
 ) : List[(A, B)] = {
   require(as.size == bs.size)
   ...
-}.ensure(_.size == as.size)</code></pre>
+}.ensuring(_.size == as.size)</code></pre>
 </div><div class="column fragment">
 <p>Limitations:</p>
 <ul>
@@ -484,8 +484,8 @@ val y: Int = x + 1
 </section>
 <section id="subtyping-with-other-scala-types" class="slide level2">
 <h2>Subtyping with other Scala types</h2>
-<p>Singleton qualified types are subtypes of literal types:</p>
-<pre class="scala"><code>{v: Int with v == 3} &lt;: 3</code></pre>
+<p>Literal types are subtype of singleton qualified types:</p>
+<pre class="scala"><code>3 &lt;: {v: Int with v == 3}</code></pre>
 <div class="fragment">
 <p>We plan to support subtyping with other Scala types in the
 future.</p>
