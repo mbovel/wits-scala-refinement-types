@@ -4,3 +4,12 @@
 target
 project
 .vscode
+*.aux
+*.bbl
+*.blg
+*.cut
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.toc

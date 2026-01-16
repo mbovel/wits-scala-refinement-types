@@ -1,37 +1,22 @@
 :root {
     /* Configurable variables: https://github.com/hakimel/reveal.js/blob/master/css/theme/template/exposer.scss */
     /* --r-main-font: Helvetica; */
-    --primary-color: #4078f2;
-    --selection-color: #296bf99c;
+    --primary-color: #2d9d70;
+    --selection-color: #2096679c;
     --r-main-font-size: 33px;
     --r-link-color: var(--primary-color);
-    --r-link-color-hover: #1e366c;
-}
-
-#title-slide::after {
-    content: "";
-    background-image: url('images/qr.png');
-    background-size: contain;
-    position: absolute;
-    display: block;
-    top: 8em;
-    right: 0em;
-    width: 10em;
-    height: 10em;
+    --r-link-color-hover: #188257;
+    --r-block-margin: 1em;
 }
 
 .reveal {
     font-weight: 300;
     color: #444;
-}
-
-.reveal .slides {
-    text-align:left;
-}
-
-.reveal pre {
-    box-shadow: none;
     line-height: 1.5;
+}
+
+.reveal section {
+    text-align: left;
 }
 
 .reveal small,
@@ -39,37 +24,77 @@
     vertical-align: inherit;
 }
 
-.reveal pre {
-    font-size: 1em;
-    width: auto;
-}
-
 .reveal ul ul {
     margin: 0;
 }
 
-pre code.hljs {
-    border-radius: 6px;
+.reveal .wide-lists li {
+    margin-bottom: 0.5em;
 }
 
-code {
+.chapter {
+    color: var(--primary-color);
+}
+
+.reveal pre {
+    box-shadow: none;
+    line-height: 1.5;
+    font-size: 1em;
+    width: auto;
+    max-height: auto;
+}
+
+.reveal pre code.hljs {
+    padding: 0.5em;
+}
+
+.reveal code {
     background-color: #fafafa;
     font-size: 0.8em;
 }
 
+.reveal pre code {
+    max-height: none;
+    display: block;
+    width: auto;
+}
+
 :not(pre) code {
-    background-color: #fafafa;
     display: inline-block;
     padding: 0.1em 0.3em;
     border-radius: 6px;
 }
 
+.hljs-comment {
+    color: #888888;
+}
+
+
+.hljs-keyword, .hljs-title {
+    color: #982f96;
+}
+
+.hljs-function .hljs-title {
+    color: #3462c5;
+}
+
+.hljs-string, .hljs-number {
+    color: var(--primary-color);
+}
+
+.hljs-type, .hljs-class .hljs-title {
+    color: #bd8100;
+}
+
+
 .katex {
     font-size: 1em;
 }
 
+
 .reveal h1 {
     margin-bottom: 0.5em;
+    font-size: 2.2em;
 }
 
 .reveal h1::after {
@@ -83,6 +108,7 @@ code {
 
 .reveal h2 {
     margin-bottom: 1em;
+    font-size: 1.2em;
 }
 
 .reveal h2::after {
@@ -115,7 +141,7 @@ code {
 }
 
 .reveal .slides section .fragment {
-    opacity: 0.2;
+    opacity: 0.1;
     visibility: visible;
 }
 
@@ -129,6 +155,10 @@ code {
 
 #TOC ul {
     columns: 2;
+}
+
+div.text {
+    width: 80%;
 }
 
 div.column {

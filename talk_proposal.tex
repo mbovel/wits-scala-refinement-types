@@ -1,0 +1,191 @@
+\documentclass[sigplan,screen,nonacm]{acmart}
+
+\definecolor{linkColor}{RGB}{0, 70, 180}
+\definecolor{typeColor}{rgb}{0.51,0.31,0.87}
+\definecolor{keywordColor}{rgb}{0.81,0.13,0.18}
+\definecolor{termColor}{rgb}{0.58,0.22,0.00}
+\definecolor{stringColor}{RGB}{10, 48, 105}
+
+\usepackage{listings}
+
+\usepackage{csquotes} % optional, for good typography
+\usepackage{etoolbox} % for \patchcmd if needed
+
+
+\newenvironment{bigquote}
+  {\par\noindent%
+   \begingroup
+   \leftskip=0pt\rightskip=0pt
+   \parindent=0pt
+   {\fontsize{36}\textcolor{gray}\textquotedblleft}\hspace{0.5em}\itshape\ignorespaces}
+  {\par\endgroup}
+
+\usepackage[scaled=0.83]{DejaVuSansMono}
+
+\makeatletter
+\newcommand*\idstyle{%
+    \expandafter\id@style\the\lst@token\relax
+}
+\def\id@style#1#2\relax{%
+    \ifcat#1\relax\else
+        \ifnum`#1=\uccode`#1%
+            \color{typeColor}
+        \else
+            \color{termColor}
+        \fi
+    \fi
+}
+\makeatother
+
+\lstset{
+  language=[3.0]Scala,
+  showstringspaces=false,
+  keepspaces=true,
+  numbers=none,
+  breaklines=true,
+  breakatwhitespace=true,
+  basicstyle=\ttfamily,
+  keywordstyle=\color{keywordColor},
+  commentstyle=\color{gray},
+  stringstyle=\color{stringColor},
+  identifierstyle=\idstyle,
+  morecomment=[l]{//},
+  morekeywords={extension,<,???,>},
+  aboveskip=3pt,
+  belowskip=3pt,
+  xleftmargin=0pt,
+  xrightmargin=0pt,
+  literate={*}{{\char42}}1
+  %literate={:}{:}1
+  %         {=}{=}1
+  %         {|}{|}1,
+}
+
+
+
+\lstdefinelanguage{EBNF}{
+  morestring=[b]{`},
+  identifierstyle=\color{termColor},
+  keywords={},
+  otherkeywords={::=,|},
+}
+
+%\newenvironment{Shaded}{
+%}{
+%}
+%
+%\newenvironment{Highlighting}{
+%}{
+%}
+%
+%\newcommand{\KeywordTok}[1]{\textcolor{keywordColor}{#1}}
+%\newcommand{\NormalTok}[1]{#1}
+%\newcommand{\OperatorTok}[1]{\textcolor{keywordColor}{#1}}
+%\newcommand{\BuiltInTok}[1]{\textcolor{keywordColor}{#1}}
+%\newcommand{\DecValTok}[1]{\textcolor{keywordColor}{#1}}
+%\newcommand{\FunctionTok}[1]{\textcolor{keywordColor}{#1}}
+%\newcommand{\ExtensionTok}[1]{\textcolor{keywordColor}{#1}}
+%\newcommand{\CommentTok}[1]{\textcolor{gray}{#1}}
+%\newcommand{\ControlFlowTok}[1]{\textcolor{keywordColor}{#1}}
+
+\newcommand{\passthrough}[1]{#1}
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\begin{document}
+
+\title{First-Class Refinement Types in Scala}
+
+\author{Matt Bovel}
+\email{matthieu@bovel.net}
+\orcid{0009-0005-5132-0279}
+\affiliation{%
+  \institution{EPFL}
+  \city{Lausanne}
+  \country{Switzerland}
+}
+
+\maketitle
+
+\section{Introduction}
+
+In this talk, we discuss usability and pratical aspects of our prototype implementation of \emph{refinement types} for Scala 3. A refinement type, written \lstinline!{x: T with p(x)}!, denotes the subset of values \lstinline!x! of type \lstinline!T! for which \lstinline!p(x)! holds. For example, \lstinline!{x: List[Int] with x.nonEmpty}! represents the type of non-empty lists of integers. Similar constructs exist in other languages under different names:
+\href{https://ucsd-progsys.github.io/liquidhaskell-tutorial/Tutorial_01_Introduction.html}{\emph{refinement
+types} in Liquid Haskell} \cite{lh},
+\href{https://fstar-lang.org/tutorial/book/part1/part1_getting_off_the_ground.html\#boolean-refinement-types}{\emph{boolean
+refinement types} in F*},
+\href{https://dafny.org/latest/DafnyRef/DafnyRef\#sec-subset-types}{\emph{subset
+types} in Dafny} or
+\href{https://lean-lang.org/doc/reference/latest/Basic-Types/Subtypes/}{\emph{subtypes}
+in Lean}.
+
+In the main existing implementation of refinement types, \emph{Liquid Haskell}, refinement types are written as comments, ignored by the type checker, and verified in a separate phase. For example, the following declaration states that the binding \lstinline!x! of type \lstinline!Int! has the refinement type of even integers:
+
+\begin{lstlisting}[language=Haskell]
+{-@ x :: {v:Int | v mod 2 == 0 } @-}
+let x = 42 :: Int in ...
+\end{lstlisting}
+
+Because Liquid Haskell refinements are written in comments and processed separately, they remain second-class: harder to debug and less integrated with the language. A recent usability study \cite{usability} observed that ``comments are usually seen as just optional information in the code and not something that is directly used by the compiler,'' and one participant remarked, ``It's sort of like you're doing two things at once because you're implementing in Haskell. But you're also talking to GHC, but you're also talking to LiquidHaskell.''
+
+Our work takes the opposite approach: refinement types are made first-class in Scala, written, inferred, and checked like ordinary Scala types. This aims to preserve the language's look and feel and enabling integration with existing features.
+
+\section{Syntax}
+
+Several syntactic variants were explored in the context of Quentin Bernet's Master's thesis \cite{quentin}. The syntax adopted in this proposal was chosen for its clarity and compatibility with existing Scala constructs.
+
+\lstinline!{x: T with p(x)}! is the \emph{long-form} syntax for refinement types. It introduces an explicit binder \lstinline!x! for the value being refined and is useful when no name is already available, for example in type aliases or function return types:
+
+\begin{lstlisting}[language=Scala]
+type Pos = {x: Int with x > 0}
+def fill(n: Pos, v: Int):
+  {res: List[Int] with res.size == n} = ???
+\end{lstlisting}
+
+\vfill\eject
+
+\noindent When the refined value already has a name, such as in a \lstinline!val! or parameter declaration, the binder can be omitted. This \emph{short form} reuses the existing name in the predicate and desugars to the long form:
+
+\begin{lstlisting}[language=Scala]
+val x: Int with x % 2 == 0 = 42
+// desugars to:
+val x: {v: Int with v % 2 == 0} = 42
+\end{lstlisting}
+
+
+\section{Mixed-Precision Type Inference}\label{selfification}
+
+Scala already supports precise types such as literal types: for example, the literal \lstinline!42! can be given the singleton type \lstinline!42!. However, this precision is typically lost due to \emph{widening}: \lstinline!val x = 42! is inferred to have type \lstinline!Int!, unless an explicit type annotation is provided, as in \lstinline!val x: 42 = 42!. Our approach generalizes this mechanism into a form of mixed-precision type inference, where refinement information is preserved only when relevant, avoiding unnecessary precision that could harm performance or compatibility.
+
+Refinement types are not inferred by default; they are introduced only when the bidirectional typing algorithm needs to check an expression against a refinement type. In such cases, the compiler attempts to \emph{selfify} the expression—that is, to give \lstinline!e: T! the refinement type \lstinline!{x: T with x == e}!. This allows valid expressions to be lifted into types.
+
+Additionally, the typing context is enriched with equality facts, which allow the system to recover precision lost during widening. These facts are introduced by the following typing rule for \lstinline!let! bindings:
+
+\[
+\frac{\Gamma \vdash e_1 : T_1 \qquad
+  \Gamma, x : T_1,\; x = e_1 \vdash e_2 : T_2}
+     {\Gamma \vdash \mathrm{let}\; x = e_1\; \mathrm{in}\; e_2 : \operatorname{avoid}(T_2, x)}
+\qquad\text{(T-Let)}
+\]
+
+Where \lstinline!avoid(T2, x)! removes references to \lstinline!x! in \lstinline!T2! (that avoids the need for well-formedness conditions as in \cite{mechanizingLH}, or explicit existential introduction as in \cite{stainless}, and is closer to the algorithmic typing strategy used in Scala).
+
+The T-Let rule enables later recovery of precision lost after widening. For example, in the following code, \lstinline!x! is typed as \lstinline!Int!, but \lstinline!y! can recover a precise refinement:
+
+\begin{lstlisting}[language=Scala]
+val x: Int = 42
+val y: (Int with y == 42) = x
+\end{lstlisting}
+
+These mechanisms are key to maintaining backward compatibility: they allows existing programs to type-check unchanged while still benefiting from additional precision when refinements are expected.
+
+\vfill\eject
+
+\begin{acks}
+We would like to thank Viktor Kunčak, Martin Odersky, Sébastien Doeraene, Guillaumes Martes, Dimi Racordon, Eugène Flesselle, and Hamza Remmal for the helpful discussions.
+\end{acks}
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}

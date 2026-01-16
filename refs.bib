@@ -1,0 +1,255 @@
+@inproceedings{lt,
+author = {Rondon, Patrick M. and Kawaguci, Ming and Jhala, Ranjit},
+title = {Liquid types},
+year = {2008},
+isbn = {9781595938602},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/1375581.1375602},
+doi = {10.1145/1375581.1375602},
+abstract = {We present Logically Qualified Data Types, abbreviated to Liquid Types, a system that combines Hindley-Milner type inference with Predicate Abstraction to automatically infer dependent types precise enough to prove a variety of safety properties. Liquid types allow programmers to reap many of the benefits of dependent types, namely static verification of critical properties and the elimination of expensive run-time checks, without the heavy price of manual annotation. We have implemented liquid type inference in DSOLVE, which takes as input an OCAML program and a set of logical qualifiers and infers dependent types for the expressions in the OCAML program. To demonstrate the utility of our approach, we describe experiments using DSOLVE to statically verify the safety of array accesses on a set of OCAML benchmarks that were previously annotated with dependent types as part of the DML project. We show that when used in conjunction with a fixed set of array bounds checking qualifiers, DSOLVE reduces the amount of manual annotation required for proving safety from 31\% of program text to under 1\%.},
+booktitle = {Proceedings of the 29th ACM SIGPLAN Conference on Programming Language Design and Implementation},
+pages = {159–169},
+numpages = {11},
+keywords = {type inference, predicate abstraction, hindley-milner, dependent types},
+location = {Tucson, AZ, USA},
+series = {PLDI '08}
+}
+
+@article{tuto,
+author = {Jhala, Ranjit and Vazou, Niki},
+title = {Refinement Types: A Tutorial},
+year = {2021},
+issue_date = {Oct 2021},
+publisher = {Now Publishers Inc.},
+address = {Hanover, MA, USA},
+volume = {6},
+number = {3–4},
+issn = {2325-1107},
+url = {https://doi.org/10.1561/2500000032},
+doi = {10.1561/2500000032},
+abstract = {Refinement types enrich a language’s type system with logical predicates that circumscribe the set of values described by the type. These refinement predicates provide software developers a tunable knob with which to inform the type system about what invariants and correctness properties should be checked on their code, and give the type checker a way to enforce those properties at compile time. In this article, we distill the ideas developed in the substantial literature on refinement types into a unified tutorial that explains the key ingredients of modern refinement type systems. In particular, we show how to implement a refinement type checker via a progression of languages that incrementally add features to the language or type system.},
+journal = {Found. Trends Program. Lang.},
+month = oct,
+pages = {159–317},
+numpages = {164}
+}
+
+@article{usability,
+author = {Gamboa, Catarina and Reese, Abigail and Fonseca, Alcides and Aldrich, Jonathan},
+title = {Usability Barriers for Liquid Types},
+year = {2025},
+issue_date = {June 2025},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {9},
+number = {PLDI},
+url = {https://doi.org/10.1145/3729327},
+doi = {10.1145/3729327},
+abstract = {Liquid types can express richer verification properties than simple type systems. However, despite their advantages, liquid types have yet to achieve widespread adoption. To understand why, we conducted a study analyzing developers' challenges with liquid types, focusing on LiquidHaskell.   Our findings reveal nine key barriers that span three categories, including developer experience, scalability challenges with complex and large codebases, and understanding the verification process. Together, these obstacles provide a comprehensive view of the usability challenges to the broader adoption of liquid types and offer insights that can inform the current and future design and implementation of liquid type systems.},
+journal = {Proc. ACM Program. Lang.},
+month = jun,
+articleno = {224},
+numpages = {26},
+keywords = {automated verification, human factors, liquid types, liquidhaskell, usability}
+}
+
+
+@inproceedings{lh,
+author = {Vazou, Niki and Seidel, Eric L. and Jhala, Ranjit and Vytiniotis, Dimitrios and Peyton-Jones, Simon},
+title = {Refinement types for Haskell},
+year = {2014},
+isbn = {9781450328739},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2628136.2628161},
+doi = {10.1145/2628136.2628161},
+abstract = {SMT-based checking of refinement types for call-by-value languages is a well-studied subject. Unfortunately, the classical translation of refinement types to verification conditions is unsound under lazy evaluation. When checking an expression, such systems implicitly assume that all the free variables in the expression are bound to values. This property is trivially guaranteed by eager, but does not hold under lazy, evaluation. Thus, to be sound and precise, a refinement type system for Haskell and the corresponding verification conditions must take into account which subset of binders actually reduces to values. We present a stratified type system that labels binders as potentially diverging or not, and that (circularly) uses refinement types to verify the labeling. We have implemented our system in LIQUIDHASKELL and present an experimental evaluation of our approach on more than 10,000 lines of widely used Haskell libraries. We show that LIQUIDHASKELL is able to prove 96\% of all recursive functions terminating, while requiring a modest 1.7 lines of termination-annotations per 100 lines of code.},
+booktitle = {Proceedings of the 19th ACM SIGPLAN International Conference on Functional Programming},
+pages = {269–282},
+numpages = {14},
+location = {Gothenburg, Sweden},
+series = {ICFP '14}
+}
+
+@article{10.1145/2692915.2628161,
+author = {Vazou, Niki and Seidel, Eric L. and Jhala, Ranjit and Vytiniotis, Dimitrios and Peyton-Jones, Simon},
+title = {Refinement types for Haskell},
+year = {2014},
+issue_date = {September 2014},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {49},
+number = {9},
+issn = {0362-1340},
+url = {https://doi.org/10.1145/2692915.2628161},
+doi = {10.1145/2692915.2628161},
+abstract = {SMT-based checking of refinement types for call-by-value languages is a well-studied subject. Unfortunately, the classical translation of refinement types to verification conditions is unsound under lazy evaluation. When checking an expression, such systems implicitly assume that all the free variables in the expression are bound to values. This property is trivially guaranteed by eager, but does not hold under lazy, evaluation. Thus, to be sound and precise, a refinement type system for Haskell and the corresponding verification conditions must take into account which subset of binders actually reduces to values. We present a stratified type system that labels binders as potentially diverging or not, and that (circularly) uses refinement types to verify the labeling. We have implemented our system in LIQUIDHASKELL and present an experimental evaluation of our approach on more than 10,000 lines of widely used Haskell libraries. We show that LIQUIDHASKELL is able to prove 96\% of all recursive functions terminating, while requiring a modest 1.7 lines of termination-annotations per 100 lines of code.},
+journal = {SIGPLAN Not.},
+month = aug,
+pages = {269–282},
+numpages = {14}
+}
+
+@mastersthesis{quentin,
+  author       = {Quentin Bernet},
+  title        = {Syntax and Runtime Checks for Qualified Types in Scala 3},
+  school       = {École Polytechnique Fédérale de Lausanne (EPFL)},
+  year         = {2024},
+  type         = {Master's thesis},
+  address      = {Lausanne, Switzerland},
+//note         = {Thesis advisor: Viktor Kunčak; external reviewer: Niki Vazou; PhD supervisor: Matt Bovel}
+}
+
+@mastersthesis{valentin,
+  author       = {Valentin Schneeberger},
+  title        = {Runtime Checks for Qualified Types in Scala 3},
+  school       = {École Polytechnique Fédérale de Lausanne (EPFL)},
+  year         = {2024},
+  type         = {Bachelor's thesis},
+  address      = {Lausanne, Switzerland}
+}
+
+@misc{refined,
+  author       = {Frank S. Thomas},
+  title        = {refined: Refined is a Scala library for refinement types},
+  year         = {2015},
+  howpublished = {\url{https://github.com/fthomas/refined}},
+  note         = {Accessed: 2025-07-17}
+}
+
+@misc{iron,
+  author       = {Iltotore},
+  title        = {Iron: A compile-time and runtime refinement library for Scala 3},
+  year         = {2021},
+  howpublished = {\url{https://github.com/Iltotore/iron}},
+  note         = {Accessed: 2025-07-17}
+}
+
+@article{mechanizingLH,
+author = {Borkowski, Michael H. and Vazou, Niki and Jhala, Ranjit},
+title = {Mechanizing Refinement Types},
+year = {2024},
+issue_date = {January 2024},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {8},
+number = {POPL},
+url = {https://doi.org/10.1145/3632912},
+doi = {10.1145/3632912},
+abstract = {Practical checkers based on refinement types use the combination of implicit semantic subtyping and parametric polymorphism to simplify the specification and automate the verification of sophisticated properties of programs. However, a formal metatheoretic accounting of the soundness of refinement type systems using this combination has proved elusive. We present λRF, a core refinement calculus that combines semantic subtyping and parametric polymorphism. We develop a metatheory for this calculus and prove soundness of the type system. Finally, we give two mechanizations of our metatheory. First, we introduce data propositions, a novel feature that enables encoding derivation trees for inductively defined judgments as refined data types, and use them to show that LiquidHaskell’s refinement types can be used for mechanization. Second, we mechanize our results in Coq, which comes with stronger soundness guarantees than LiquidHaskell, thereby laying the foundations for mechanizing the metatheory of LiquidHaskell.},
+journal = {Proc. ACM Program. Lang.},
+month = jan,
+articleno = {70},
+numpages = {30},
+keywords = {refinement types, LiquidHaskell}
+}
+
+@InProceedings{fwRefinedJava,
+  author =	{Sun, Ke and Wang, Di and Chen, Sheng and Wang, Meng and Hao, Dan},
+  title =	{{Formalizing, Mechanizing, and Verifying Class-Based Refinement Types}},
+  booktitle =	{38th European Conference on Object-Oriented Programming (ECOOP 2024)},
+  pages =	{39:1--39:30},
+  series =	{Leibniz International Proceedings in Informatics (LIPIcs)},
+  ISBN =	{978-3-95977-341-6},
+  ISSN =	{1868-8969},
+  year =	{2024},
+  volume =	{313},
+  editor =	{Aldrich, Jonathan and Salvaneschi, Guido},
+  publisher =	{Schloss Dagstuhl -- Leibniz-Zentrum f{\"u}r Informatik},
+  address =	{Dagstuhl, Germany},
+  URL =		{https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ECOOP.2024.39},
+  URN =		{urn:nbn:de:0030-drops-208881},
+  doi =		{10.4230/LIPIcs.ECOOP.2024.39},
+  annote =	{Keywords: Refinement Types, Program Verification, Object-oriented Programming}
+}
+
+@InProceedings{princess08,
+  author    = {Philipp R{\"u}mmer},
+  title     = {A Constraint Sequent Calculus for First-Order Logic with
+               Linear Integer Arithmetic},
+  booktitle = {Proceedings, 15th International Conference on Logic
+               for Programming, Artificial Intelligence and
+               Reasoning},
+  year      = 2008,
+  volume    = {5330},
+  pages     = {274-289},
+  isbn      = {978-3-540-89438-4},
+  series    = {LNCS},
+  publisher = {Springer}
+}
+
+@inproceedings{georg,
+author = {Schmid, Georg Stefan and Kuncak, Viktor},
+title = {SMT-based checking of predicate-qualified types for Scala},
+year = {2016},
+isbn = {9781450346481},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2998392.2998398},
+doi = {10.1145/2998392.2998398},
+abstract = {We present *qualified types* for Scala, a form of refinement types adapted to the Scala language. Qualified types allow users to refine base types and classes using predicate expressions. We implemented a type checker for qualified types that is embedded in Scala's next-generation compiler Dotty and delegates constraint checking to an SMT solver. Our system supports many of Scala's functional as well as its object-oriented constructs. To propagate user-provided qualifier ascriptions we utilize both Scala's own type system and an incomplete, but effective qualifier inference algorithm. Our evaluation shows that for a series of examples exerting various of Scala's language features, the additional compile-time overhead is manageable. By combining these features we show that one can verify essential safety properties such as static bounds-checks while retaining several of Scala's advanced features.},
+booktitle = {Proceedings of the 2016 7th ACM SIGPLAN Symposium on Scala},
+pages = {31–40},
+numpages = {10},
+keywords = {Refinement Types, Scala},
+location = {Amsterdam, Netherlands},
+series = {SCALA 2016}
+}
+
+@article{stainless,
+author = {Hamza, Jad and Voirol, Nicolas and Kun\v{c}ak, Viktor},
+title = {System FR: formalized foundations for the stainless verifier},
+year = {2019},
+issue_date = {October 2019},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {3},
+number = {OOPSLA},
+url = {https://doi.org/10.1145/3360592},
+doi = {10.1145/3360592},
+abstract = {We present the design, implementation, and foundation of a verifier for higher-order functional programs with generics and recursive data types. Our system supports proving safety and termination using preconditions, postconditions and assertions. It supports writing proof hints using assertions and recursive calls. To formalize the soundness of the system we introduce System FR, a calculus supporting System F polymorphism, dependent refinement types, and recursive types (including recursion through contravariant positions of function types). Through the use of sized types, System FR supports reasoning about termination of lazy data structures such as streams. We formalize a reducibility argument using the Coq proof assistant and prove the soundness of a type-checker with respect to call-by-value semantics, ensuring type safety and normalization for typeable programs. Our program verifier is implemented as an alternative verification-condition generator for the Stainless tool, which relies on the Inox SMT-based solver backend for automation. We demonstrate the efficiency of our approach by verifying a collection of higher-order functional programs comprising around 14000 lines of polymorphic higher-order Scala code, including graph search algorithms, basic number theory, monad laws, functional data structures, and assignments from popular Functional Programming MOOCs.},
+journal = {Proc. ACM Program. Lang.},
+month = oct,
+articleno = {166},
+numpages = {30},
+keywords = {SMT, System F, dependent types, recursive types, software verification}
+}
+
+@article{nelson,
+author = {Nelson, Greg and Oppen, Derek C.},
+title = {Fast Decision Procedures Based on Congruence Closure},
+year = {1980},
+issue_date = {April 1980},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {27},
+number = {2},
+issn = {0004-5411},
+url = {https://doi.org/10.1145/322186.322198},
+doi = {10.1145/322186.322198},
+abstract = {The notion of the congruence closure of a relation on a graph is defined and several algorithms for computing it are surveyed. A simple proof is given that the congruence closure algorithm provides a decision procedure for the quantifier-free theory of equality. A decision procedure is then given for the quantifier-free theory of LISP list structure based on the congruence closure algorithm. Both decision procedures determine the satisfiability of a conjunction of literals of length n in average time O(n log n) using the fastest known congruence closure algorithm. It is also shown that if the axiomatization of the theory of list structure is changed slightly, the problem of determining the satisfiability of a conjunction of literals becomes NP-complete. The decision procedures have been implemented in the authors' simplifier for the Stanford Pascal Verifier.},
+journal = {J. ACM},
+month = apr,
+pages = {356–364},
+numpages = {9}
+}
+
+@article{egg,
+author = {Willsey, Max and Nandi, Chandrakana and Wang, Yisu Remy and Flatt, Oliver and Tatlock, Zachary and Panchekha, Pavel},
+title = {egg: Fast and extensible equality saturation},
+year = {2021},
+issue_date = {January 2021},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {5},
+number = {POPL},
+url = {https://doi.org/10.1145/3434304},
+doi = {10.1145/3434304},
+abstract = {An e-graph efficiently represents a congruence relation over many expressions. Although they were originally developed in the late 1970s for use in automated theorem provers, a more recent technique known as equality saturation repurposes e-graphs to implement state-of-the-art, rewrite-driven compiler optimizations and program synthesizers. However, e-graphs remain unspecialized for this newer use case. Equality saturation workloads exhibit distinct characteristics and often require ad-hoc e-graph extensions to incorporate transformations beyond purely syntactic rewrites.  This work contributes two techniques that make e-graphs fast and extensible, specializing them to equality saturation. A new amortized invariant restoration technique called rebuilding takes advantage of equality saturation's distinct workload, providing asymptotic speedups over current techniques in practice. A general mechanism called e-class analyses integrates domain-specific analyses into the e-graph, reducing the need for ad hoc manipulation. We implemented these techniques in a new open-source library called egg. Our case studies on three previously published applications of equality saturation highlight how egg's performance and flexibility enable state-of-the-art results across diverse domains.},
+journal = {Proc. ACM Program. Lang.},
+month = jan,
+articleno = {23},
+numpages = {29},
+keywords = {equality saturation, e-graphs}
+}
