@@ -66,7 +66,7 @@ $$\{ l: \text{List[A]} \mid l.\text{nonEmpty} \}$$
 
 <div class="fragment">
 
-In Scala, we use `with` instead of `|` because the later is already used for union types:
+In Scala, we use `with` instead of `|` because the latter is already used for union types:
 
 ```scala
 type NonEmptyList[A] = { l: List[A] with l.nonEmpty }
@@ -114,7 +114,7 @@ When the value already has a name, like a parameter or val, you can skip the bin
 
 </div>
 
-## <span class="chapter">Syntax:</span> Example sized List API 
+## <span class="chapter">Syntax:</span> Example sized List API
 
 ```scala
 def zip[A, B](xs: List[A], ys: List[B] with ys.size == xs.size):
@@ -160,7 +160,7 @@ Refinement type subtyping is checked during Scala type checking, not as a separa
 
 ## <span class="chapter">First-class:</span> Error messages
 
-Predicate are type-checked like other Scala expressions:
+Predicates are type-checked like other Scala expressions:
 
 ```scala
 def f[A](l: List[A] with l.notEmpty) = () // error
@@ -232,7 +232,7 @@ Why not type `x` as `{v: Int with v == 42}` directly?
 
 Because it would:
 
-1. **Not be backward compatible:** overload resolution and implicit search return different results for a type v.s. a more precise subtype.
+1. **Not be backward compatible:** overload resolution and implicit search return different results for a type vs. a more precise subtype.
 2. **Would hurt UX:** users would be flooded with complex types.
 2. **Would hurt performance:** big types slow down type checking.
 
@@ -260,7 +260,7 @@ $$
 ## <span class="chapter">Typing</span>: Selfification (2)
 
 
-Selfifcation is standard in other refinement type systems.
+Selfification is standard in other refinement type systems.
 
 <div>
 
@@ -409,7 +409,7 @@ We can match on non-empty sequences, ensuring `head` and `tail` are safe to use:
 ```scala
 def merge[T: Ordering as ord](left: SafeSeq[T], right: SafeSeq[T]): SafeSeq[T] =
   (left, right) match
-    case (l: SafeSeq[T] with r.len > 0, r: SafeSeq[T] with r.len > 0) =>
+    case (l: SafeSeq[T] with l.len > 0, r: SafeSeq[T] with r.len > 0) =>
       if ord.lt(l.head, r.head) then
         SafeSeq(l.head) ++ merge(l.tail, r)
       else
