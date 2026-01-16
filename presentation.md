@@ -11,13 +11,13 @@ Refinement types are types qualified with logical predicates.
 
 <div class="fragment">
 
-$$\{ x: \text{Int} \mid x > 0 \}$$ denotes the type of all integers `x` such that `x > 0`, for example.
+For example, $$\{ x: \text{Int} \mid x > 0 \}$$ denotes the type of all integers `x` such that `x > 0`.
 
 </div>
 
 <div class="fragment">
 
-Implemented in many languages [Liquid Haskell](https://ucsd-progsys.github.io/liquidhaskell/), [Boolean refinement types in F\*](https://fstar-lang.org/tutorial/book/part1/part1_getting_off_the_ground.html#boolean-refinement-types), [Subset types in Dafny](https://dafny.org/latest/DafnyRef/DafnyRef#sec-subset-types), [Subtypes in Lean](https://lean-lang.org/doc/reference/latest/Basic-Types/Subtypes/), etc.
+Implemented in many languages: [Liquid Haskell](https://ucsd-progsys.github.io/liquidhaskell/), [Boolean refinement types in F\*](https://fstar-lang.org/tutorial/book/part1/part1_getting_off_the_ground.html#boolean-refinement-types), [Subset types in Dafny](https://dafny.org/latest/DafnyRef/DafnyRef#sec-subset-types), [Subtypes in Lean](https://lean-lang.org/doc/reference/latest/Basic-Types/Subtypes/), etc.
 
 </div>
 
@@ -60,7 +60,7 @@ We present a work-in-progress implementation of refinement types in Scala 3, wit
 
 ## <span class="chapter">Syntax</span>
 
-Consider type of non-empty lists:
+Consider the type of non-empty lists:
 
 $$\{ l: \text{List[A]} \mid l.\text{nonEmpty} \}$$
 
@@ -144,7 +144,7 @@ let x = 42 :: Int in ...
 
 <div class="fragment">
 
-On the contrary, our implementation is directly integrated into the Scala 3 compiler:
+In contrast, our implementation is directly integrated into the Scala 3 compiler:
 
 ```scala
 val x: Int with (x % 2 == 0) = 42
@@ -233,8 +233,8 @@ Why not type `x` as `{v: Int with v == 42}` directly?
 Because it would:
 
 1. **Not be backward compatible:** overload resolution and implicit search return different results for a type vs. a more precise subtype.
-2. **Would hurt UX:** users would be flooded with complex types.
-2. **Would hurt performance:** big types slow down type checking.
+2. **Hurt UX:** users would be flooded with complex types.
+3. **Hurt performance:** big types slow down type checking.
 
 </div>
 
@@ -264,7 +264,7 @@ Selfification is standard in other refinement type systems.
 
 <div>
 
-Typing based on the expected type is standard in Scala. We also do so for singleton types or union types for example:
+Typing based on the expected type is standard in Scala. We also do so for singleton types or union types, for example:
 
 ```scala
 val x: 42 = 42
@@ -330,7 +330,7 @@ When the compiler can't verify a predicate statically, you can use runtime check
 
 ## <span class="chapter">Runtime checks:</span> `.runtimeChecked`
 
-You can also use `.runtimeChecked` ([SIP-57](https://docs.scala-lang.org/sips/replace-nonsensical-unchecked-annotation.html)) when the check must always pass:
+You can also use `.runtimeChecked` ([SIP-57](https://docs.scala-lang.org/sips/replace-nonsensical-unchecked-annotation.html)) when you expect the check to always pass:
 
 ```scala
 val id: ID = "a2e7-e89b".runtimeChecked
@@ -823,7 +823,7 @@ Or grouping operands with the same constant factor in sums of products:
 
 ## <span class="chapter">Subtyping:</span> Local unfolding
 
-Remember: qualified types are not inferred from terms by default. However, the solver can unfold definitions of local `val` (only), even when they have an imprecise type:
+As mentioned, qualified types are not inferred from terms by default. However, the solver can unfold definitions of local `val` (only), even when they have an imprecise type:
 
 ```scala
 val x: Int = ...
@@ -858,7 +858,7 @@ This is implemented using an E-Graph-like data structure.
 
 ## <span class="chapter">Subtyping:</span> With other Scala types
 
-Literal types are subtype of singleton qualified types:
+Literal types are subtypes of singleton qualified types:
 
 ```scala
 3 <: {v: Int with v == 3}

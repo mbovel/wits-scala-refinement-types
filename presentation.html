@@ -73,12 +73,12 @@ done in collaboration with Quentin Bernet and Valentin Schneeberger</p>
 <div class="text">
 <p>Refinement types are types qualified with logical predicates.</p>
 <div class="fragment">
-<p><span class="math display">\{ x: \text{Int} \mid x &gt; 0 \}</span>
-denotes the type of all integers <code>x</code> such that
-<code>x &gt; 0</code>, for example.</p>
+<p>For example, <span class="math display">\{ x: \text{Int} \mid x &gt;
+0 \}</span> denotes the type of all integers <code>x</code> such that
+<code>x &gt; 0</code>.</p>
 </div>
 <div class="fragment">
-<p>Implemented in many languages <a
+<p>Implemented in many languages: <a
 href="https://ucsd-progsys.github.io/liquidhaskell/">Liquid Haskell</a>,
 <a
 href="https://fstar-lang.org/tutorial/book/part1/part1_getting_off_the_ground.html#boolean-refinement-types">Boolean
@@ -136,12 +136,12 @@ when needed.
 </section>
 <section id="syntax" class="slide level2">
 <h2><span class="chapter">Syntax</span></h2>
-<p>Consider type of non-empty lists:</p>
+<p>Consider the type of non-empty lists:</p>
 <p><span class="math display">\{ l: \text{List[A]} \mid
 l.\text{nonEmpty} \}</span></p>
 <div class="fragment">
 <p>In Scala, we use <code>with</code> instead of <code>|</code> because
-the later is already used for union types:</p>
+the latter is already used for union types:</p>
 <pre class="scala"><code>type NonEmptyList[A] = { l: List[A] with l.nonEmpty }</code></pre>
 <ul>
 <li><code>l</code>: binder</li>
@@ -192,8 +192,8 @@ zip(concat(xs, ys), concat(xs, xs)) // error</code></pre>
 <pre class="haskell"><code>{-@ x :: {v:Int | v mod 2 == 0 } @-}
 let x = 42 :: Int in ...</code></pre>
 <div class="fragment">
-<p>On the contrary, our implementation is directly integrated into the
-Scala 3 compiler:</p>
+<p>In contrast, our implementation is directly integrated into the Scala
+3 compiler:</p>
 <pre class="scala"><code>val x: Int with (x % 2 == 0) = 42</code></pre>
 </div>
 <div class="fragment">
@@ -204,7 +204,7 @@ poor UX.</p>
 </section>
 <section id="first-class-error-messages" class="slide level2">
 <h2><span class="chapter">First-class:</span> Error messages</h2>
-<p>Predicate are type-checked like other Scala expressions:</p>
+<p>Predicates are type-checked like other Scala expressions:</p>
 <pre class="scala"><code>def f[A](l: List[A] with l.notEmpty) = () // error</code></pre>
 <pre class="text"><code>-- [E008] Not Found Error: tests/neg-custom-args/qualified-types/predicate_error.scala:1:27 ----------------------------
 1 |def f[A](l: List[A] with l.notEmpty) = () // error
@@ -254,11 +254,11 @@ directly?</p>
 <p>Because it would:</p>
 <ol type="1">
 <li><strong>Not be backward compatible:</strong> overload resolution and
-implicit search return different results for a type v.s. a more precise
+implicit search return different results for a type vs. a more precise
 subtype.</li>
-<li><strong>Would hurt UX:</strong> users would be flooded with complex
+<li><strong>Hurt UX:</strong> users would be flooded with complex
 types.</li>
-<li><strong>Would hurt performance:</strong> big types slow down type
+<li><strong>Hurt performance:</strong> big types slow down type
 checking.</li>
 </ol>
 </div>
@@ -280,10 +280,10 @@ checking.</li>
 </section>
 <section id="typing-selfification-2" class="slide level2">
 <h2><span class="chapter">Typing</span>: Selfification (2)</h2>
-<p>Selfifcation is standard in other refinement type systems.</p>
+<p>Selfification is standard in other refinement type systems.</p>
 <div>
 <p>Typing based on the expected type is standard in Scala. We also do so
-for singleton types or union types for example:</p>
+for singleton types or union types, for example:</p>
 <pre class="scala"><code>val x: 42 = 42
 val y: Int | String = if (cond) 42 else &quot;foo&quot;</code></pre>
 </div>
@@ -330,7 +330,7 @@ runtime checks. Pattern matching checks the predicate at runtime.</p>
 <code>.runtimeChecked</code></h2>
 <p>You can also use <code>.runtimeChecked</code> (<a
 href="https://docs.scala-lang.org/sips/replace-nonsensical-unchecked-annotation.html">SIP-57</a>)
-when the check must always pass:</p>
+when you expect the check to always pass:</p>
 <pre class="scala"><code>val id: ID = &quot;a2e7-e89b&quot;.runtimeChecked</code></pre>
 <div class="fragment">
 <p>Desugars to:</p>
@@ -384,7 +384,7 @@ object SafeSeq:
 <code>tail</code> are safe to use:</p>
 <pre class="scala"><code>def merge[T: Ordering as ord](left: SafeSeq[T], right: SafeSeq[T]): SafeSeq[T] =
   (left, right) match
-    case (l: SafeSeq[T] with r.len &gt; 0, r: SafeSeq[T] with r.len &gt; 0) =&gt;
+    case (l: SafeSeq[T] with l.len &gt; 0, r: SafeSeq[T] with r.len &gt; 0) =&gt;
       if ord.lt(l.head, r.head) then
         SafeSeq(l.head) ++ merge(l.tail, r)
       else
@@ -773,7 +773,7 @@ products:</p>
 </section>
 <section id="subtyping-local-unfolding" class="slide level2">
 <h2><span class="chapter">Subtyping:</span> Local unfolding</h2>
-<p>Remember: qualified types are not inferred from terms by default.
+<p>As mentioned, qualified types are not inferred from terms by default.
 However, the solver can unfold definitions of local <code>val</code>
 (only), even when they have an imprecise type:</p>
 <pre class="scala"><code>val x: Int = ...
@@ -795,7 +795,7 @@ val y: Int = x + 1
 </section>
 <section id="subtyping-with-other-scala-types" class="slide level2">
 <h2><span class="chapter">Subtyping:</span> With other Scala types</h2>
-<p>Literal types are subtype of singleton qualified types:</p>
+<p>Literal types are subtypes of singleton qualified types:</p>
 <pre class="scala"><code>3 &lt;: {v: Int with v == 3}</code></pre>
 <div class="fragment">
 <p>We plan to support subtyping with other Scala types in the
