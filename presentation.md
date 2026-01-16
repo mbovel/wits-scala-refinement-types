@@ -97,7 +97,7 @@ def zip[A, B](xs: List[A], ys: {ys: List[B] with ys.size == xs.size})
 We can omit it:
 
 ```scala
-def zip[A, B](xs: List[A], ys: List[B] with xs.size == ys.size)
+def zip[A, B](xs: List[A], ys: List[B] with ys.size == xs.size)
 ```
 
 </div>
@@ -154,7 +154,7 @@ val x: Int with (x % 2 == 0) = 42
 
 <div class="fragment">
 
-Refinement type subtyping is checked during Scala type checking, not as a separate phase. First POCs did this as a separate phase, leading to poor UX.
+Refinement type subtyping is checked during Scala type checking, not as a separate phase. Early prototypes did this as a separate phase, leading to poor UX.
 
 </div>
 
@@ -314,8 +314,10 @@ type ID = {s: String with s.matches(idRegex)}
 
 ```scala
 "a2e7-e89b" match
-    case id: ID => // matched: `id` matches idRegex
-    case id     => // didn't match
+    case id: ID =>
+        id: ID // matched, id has type ID
+    case id     =>
+        // default case, did not match
 ```
 
 </div>
@@ -362,7 +364,7 @@ Ideal timing: 10:00
 
 ## <span class="chapter">Example:</span> Bound-checked merge sort
 
-Specify a type for non-negative integers and a safe division function:
+Specify a type for non-negative integers (`Pos`) and a safe division function:
 
 ```scala
 type Pos = {x: Int with x >= 0}
@@ -420,13 +422,13 @@ def merge[T: Ordering as ord](left: SafeSeq[T], right: SafeSeq[T]): SafeSeq[T] =
 
 <div class="fragment">
 
-Will be nicer with flow-sensitive typing.
+This would be simplified with flow-sensitive typing.
 
 </div>
 
 ## <span class="chapter">Example:</span> Bound-checked merge sort (4)
 
-`middle` is known to be less than length, so `splitAt` is safe to use:
+`middle` is known to be less than `len`, so `splitAt` is safe to use:
 
 ```scala
 def mergeSort[T: Ordering](list: SafeSeq[T]): SafeSeq[T] =
@@ -554,14 +556,11 @@ A semantic type is a predicate on values. The interpretation $⟦ A ⟧_{\delta}
 
 $$
 \begin{aligned}
-⟦ X ⟧_{\delta}^{\rho} &= \delta(X) \\
-⟦ \texttt{Unit} ⟧_{\delta}^{\rho} &= \lambda v.\ v = \texttt{unit} \\
+\cdots\\
 ⟦ \texttt{Bool} ⟧_{\delta}^{\rho} &= \lambda v.\ v = \texttt{true} \lor v = \texttt{false} \\
-⟦ \Pi x: A.\ B ⟧_{\delta}^{\rho} &= \lambda v.\ \cdots \land \forall v_a.\ ⟦ A ⟧_{\delta}^{\rho}(v_a) \implies \exists v'. \left( \rho_f, x \mapsto v_a \vdash b \Downarrow v' \land ⟦ B ⟧_{\delta}^{\rho, x \mapsto v_a}(v') \right) \\
-⟦ \forall X.\ B ⟧_{\delta}^{\rho} &= \lambda v.\ \cdots \land \forall A.\ \exists v'. \left( \rho_f \vdash b \Downarrow v' \land ⟦ B ⟧_{\delta, X \mapsto A}^{\rho}(v') \right) \\
+\cdots\\
 ⟦ \lbrace  x : A \mid p \rbrace  ⟧_{\delta}^{\rho} &= \lambda v.\ ⟦ A ⟧_{\delta}^{\rho}(v) \land \rho, x \mapsto v \vdash p \Downarrow \texttt{true} \\
-⟦ A \lor B ⟧_{\delta}^{\rho} &= \lambda v.\ ⟦ A ⟧_{\delta}^{\rho}(v) \lor ⟦ B ⟧_{\delta}^{\rho}(v) \\
-⟦ A \land B ⟧_{\delta}^{\rho} &= \lambda v.\ ⟦ A ⟧_{\delta}^{\rho}(v) \land ⟦ B ⟧_{\delta}^{\rho}(v)
+\cdots\\
 \end{aligned}
 $$
 

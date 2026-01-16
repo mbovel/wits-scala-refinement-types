@@ -165,7 +165,7 @@ types, which refine members like <code>val</code> and
 <pre class="scala"><code>def zip[A, B](xs: List[A], ys: {ys: List[B] with ys.size == xs.size})</code></pre>
 <div class="fragment">
 <p>We can omit it:</p>
-<pre class="scala"><code>def zip[A, B](xs: List[A], ys: List[B] with xs.size == ys.size)</code></pre>
+<pre class="scala"><code>def zip[A, B](xs: List[A], ys: List[B] with ys.size == xs.size)</code></pre>
 </div>
 <div class="fragment">
 <p>The second version is desugared to the first.</p>
@@ -198,8 +198,8 @@ let x = 42 :: Int in ...</code></pre>
 </div>
 <div class="fragment">
 <p>Refinement type subtyping is checked during Scala type checking, not
-as a separate phase. First POCs did this as a separate phase, leading to
-poor UX.</p>
+as a separate phase. Early prototypes did this as a separate phase,
+leading to poor UX.</p>
 </div>
 </section>
 <section id="first-class-error-messages" class="slide level2">
@@ -316,8 +316,10 @@ runtime using pattern matching:</p>
 type ID = {s: String with s.matches(idRegex)}</code></pre>
 <div class="fragment">
 <pre class="scala"><code>&quot;a2e7-e89b&quot; match
-    case id: ID =&gt; // matched: `id` matches idRegex
-    case id     =&gt; // didn&#39;t match</code></pre>
+    case id: ID =&gt;
+        id: ID // matched, id has type ID
+    case id     =&gt;
+        // default case, did not match</code></pre>
 </div>
 <aside class="notes">
 <p>Ideal timing: 09:15</p>
@@ -349,8 +351,8 @@ altogether.</p>
 </section>
 <section id="example-bound-checked-merge-sort" class="slide level2">
 <h2><span class="chapter">Example:</span> Bound-checked merge sort</h2>
-<p>Specify a type for non-negative integers and a safe division
-function:</p>
+<p>Specify a type for non-negative integers (<code>Pos</code>) and a
+safe division function:</p>
 <pre class="scala"><code>type Pos = {x: Int with x &gt;= 0}
 
 def safeDiv(x: Pos, y: Pos with y &gt; 1): {res: Pos with res &lt; x} =
@@ -392,13 +394,13 @@ object SafeSeq:
     case (l, r) =&gt;
       if l.len == 0 then r else l</code></pre>
 <div class="fragment">
-<p>Will be nicer with flow-sensitive typing.</p>
+<p>This would be simplified with flow-sensitive typing.</p>
 </div>
 </section>
 <section id="example-bound-checked-merge-sort-4" class="slide level2">
 <h2><span class="chapter">Example:</span> Bound-checked merge sort
 (4)</h2>
-<p><code>middle</code> is known to be less than length, so
+<p><code>middle</code> is known to be less than <code>len</code>, so
 <code>splitAt</code> is safe to use:</p>
 <pre class="scala"><code>def mergeSort[T: Ordering](list: SafeSeq[T]): SafeSeq[T] =
   val len = list.len
@@ -516,25 +518,14 @@ variable environment <span class="math inline">\delta</span> and a value
 environment <span class="math inline">\rho</span>:</p>
 <p><span class="math display">
 \begin{aligned}
-⟦ X ⟧_{\delta}^{\rho} &amp;= \delta(X) \\
-⟦ \texttt{Unit} ⟧_{\delta}^{\rho} &amp;= \lambda v.\ v = \texttt{unit}
-\\
+\cdots\\
 ⟦ \texttt{Bool} ⟧_{\delta}^{\rho} &amp;= \lambda v.\ v = \texttt{true}
 \lor v = \texttt{false} \\
-⟦ \Pi x: A.\ B ⟧_{\delta}^{\rho} &amp;= \lambda v.\ \cdots \land \forall
-v_a.\ ⟦ A ⟧_{\delta}^{\rho}(v_a) \implies \exists v&#39;. \left( \rho_f,
-x \mapsto v_a \vdash b \Downarrow v&#39; \land ⟦ B ⟧_{\delta}^{\rho, x
-\mapsto v_a}(v&#39;) \right) \\
-⟦ \forall X.\ B ⟧_{\delta}^{\rho} &amp;= \lambda v.\ \cdots \land
-\forall A.\ \exists v&#39;. \left( \rho_f \vdash b \Downarrow v&#39;
-\land ⟦ B ⟧_{\delta, X \mapsto A}^{\rho}(v&#39;) \right) \\
+\cdots\\
 ⟦ \lbrace  x : A \mid p \rbrace  ⟧_{\delta}^{\rho} &amp;= \lambda v.\ ⟦
 A ⟧_{\delta}^{\rho}(v) \land \rho, x \mapsto v \vdash p \Downarrow
 \texttt{true} \\
-⟦ A \lor B ⟧_{\delta}^{\rho} &amp;= \lambda v.\ ⟦ A ⟧_{\delta}^{\rho}(v)
-\lor ⟦ B ⟧_{\delta}^{\rho}(v) \\
-⟦ A \land B ⟧_{\delta}^{\rho} &amp;= \lambda v.\ ⟦ A
-⟧_{\delta}^{\rho}(v) \land ⟦ B ⟧_{\delta}^{\rho}(v)
+\cdots\\
 \end{aligned}
 </span></p>
 </section>
