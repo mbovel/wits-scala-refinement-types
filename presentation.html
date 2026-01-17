@@ -90,9 +90,9 @@ in Lean</a>, etc.</p>
 </div>
 <div class="fragment">
 <p>Prior art in Scala: <a
-href="https://dl.acm.org/doi/10.1145/2998392.2998398">“SMT-based
-checking of predicate-qualified types for Scala” (Schmid &amp; Kunčak,
-2016)</a>, <a href="https://github.com/fthomas">Refined</a>, <a
+href="https://dl.acm.org/doi/10.1145/2998392.2998398">SMT-based checking
+of predicate-qualified types for Scala</a> (Schmid and Kunčak, Scala
+Symposium 2016), <a href="https://github.com/fthomas">Refined</a>, <a
 href="https://github.com/Iltotore/iron">Iron</a>.</p>
 </div>
 </div>
@@ -277,15 +277,10 @@ checking.</li>
 \text{(T-Self)}
 </span></p>
 </div>
-</section>
-<section id="typing-selfification-2" class="slide level2">
-<h2><span class="chapter">Typing</span>: Selfification (2)</h2>
-<p>Selfification is standard in other refinement type systems.</p>
-<div>
-<p>Typing based on the expected type is standard in Scala. We also do so
-for singleton types or union types, for example:</p>
-<pre class="scala"><code>val x: 42 = 42
-val y: Int | String = if (cond) 42 else &quot;foo&quot;</code></pre>
+<div class="fragment">
+<p>Selfification is standard in other refinement type systems. Typing
+based on the expected type is standard in Scala. We also do so for
+singleton types or union types.</p>
 </div>
 </section>
 <section id="typing-local-unfolding" class="slide level2">
@@ -305,7 +300,9 @@ val v3: Int with (v3 == v1) = v2</code></pre>
 </span></p>
 </div>
 <div class="fragment">
-<p>System FR has a similar rule.</p>
+<p>Similar rule in <a href="https://doi.org/10.1145/3360592">System FR
+as Foundations for Stainless</a> (Hamza, Voirol and Kunčak, OOPSLA
+2019).</p>
 </div>
 </section>
 <section id="runtime-checks" class="slide level2">
@@ -426,13 +423,21 @@ object SafeSeq:
 <div class="fragment">
 <p>We developed a lightweight custom solver that combines several
 techniques:</p>
-<ul>
-<li>constant folding,</li>
-<li>normalization,</li>
-<li>unfolding,</li>
-<li>and equality reasoning.</li>
-</ul>
 </div>
+<ul>
+<li class="fragment">
+constant folding,
+</li>
+<li class="fragment">
+normalization,
+</li>
+<li class="fragment">
+unfolding,
+</li>
+<li class="fragment">
+equality reasoning.
+</li>
+</ul>
 <aside class="notes">
 <p>Ideal timing: 17:00</p>
 <p>To check if one qualified type is a subtype of another, the compiler
@@ -489,25 +494,19 @@ a, b, f &amp;::= \texttt{unit} \mid \texttt{true} \mid \texttt{false}
 \end{aligned}
 </span></p>
 <div class="fragment">
-<p>Mechanization for this fragment complete since yesterday:</p>
+<p>Mechanization for this fragment complete since yesterday. Done in
+Rocq, using a definitional interp, semantic types and Autosubst (for de
+Bruijn indices). Doesn’t include an implication solver.</p>
+<p><small>See <a href="https://doi.org/10.1145/3632912">Mechanizing
+Refinement Types</a> (Borkowski, Vazou and Jhala, POPL 2024), <a
+href="https://doi.org/10.1145/3093333.3009866">Type Soundness Proofs
+with Definitional Interpreters</a> (Amin and Tiark Rompf, POPL 2017), <a
+href="https://doi.org/10.1145/3676954">A Logical Approach to Type
+Soundness</a> (Timany, Krebbers, Dreyer and Birkedal, Journal of the ACM
+2024), <a href="https://doi.org/10.1007/978-3-319-22102-1_24">Autosubst:
+Reasoning with de Bruijn Terms and Parallel Substitutions</a> (Schäfer,
+Tebbi and Smolka, ITP 2015).</small></p>
 </div>
-<ul>
-<li class="fragment">
-in Rocq
-</li>
-<li class="fragment">
-using a definitional interpreter
-</li>
-<li class="fragment">
-with semantic types
-</li>
-<li class="fragment">
-Autosubst 1 (de Bruijn indices)
-</li>
-<li class="fragment">
-doesn’t include implication solver
-</li>
-</ul>
 </section>
 <section id="mechanization-interpretation" class="slide level2">
 <h2><span class="chapter">Mechanization</span>: Interpretation</h2>

@@ -24,7 +24,7 @@ Implemented in many languages: [Liquid Haskell](https://ucsd-progsys.github.io/l
 
 <div class="fragment">
 
-Prior art in Scala: [“SMT-based checking of predicate-qualified types for Scala” (Schmid & Kunčak, 2016)](https://dl.acm.org/doi/10.1145/2998392.2998398), [Refined](https://github.com/fthomas), [Iron](https://github.com/Iltotore/iron).
+Prior art in Scala: [SMT-based checking of predicate-qualified types for Scala](https://dl.acm.org/doi/10.1145/2998392.2998398) (Schmid and Kunčak, Scala Symposium 2016), [Refined](https://github.com/fthomas), [Iron](https://github.com/Iltotore/iron).
 
 </div>
 
@@ -257,19 +257,9 @@ $$
 
 </div>
 
-## <span class="chapter">Typing</span>: Selfification (2)
+<div class="fragment">
 
-
-Selfification is standard in other refinement type systems.
-
-<div>
-
-Typing based on the expected type is standard in Scala. We also do so for singleton types or union types, for example:
-
-```scala
-val x: 42 = 42
-val y: Int | String = if (cond) 42 else "foo"
-```
+Selfification is standard in other refinement type systems. Typing based on the expected type is standard in Scala. We also do so for singleton types or union types.
 
 </div>
 
@@ -296,7 +286,7 @@ $$
 
 <div class="fragment">
 
-System FR has a similar rule.
+Similar rule in [System FR as Foundations for Stainless](https://doi.org/10.1145/3360592) (Hamza, Voirol and Kunčak, OOPSLA 2019).
 
 </div>
 
@@ -458,12 +448,16 @@ A solver is needed to check logical implication (2.).
 
 We developed a lightweight custom solver that combines several techniques:
 
-- constant folding,
-- normalization,
-- unfolding,
-- and equality reasoning.
-
 </div>
+
+<ul>
+
+<li class="fragment">constant folding,</li>
+<li class="fragment">normalization,</li>
+<li class="fragment">unfolding,</li>
+<li class="fragment">equality reasoning.</li>
+
+</ul>
 
 <div class="notes">
 
@@ -535,19 +529,11 @@ $$
 
 <div class="fragment">
 
-Mechanization for this fragment complete since yesterday:
+Mechanization for this fragment complete since yesterday. Done in Rocq, using a definitional interp, semantic types and Autosubst (for de Bruijn indices). Doesn't include an implication solver.
+
+<small>See [Mechanizing Refinement Types](https://doi.org/10.1145/3632912) (Borkowski, Vazou and Jhala, POPL 2024), [Type Soundness Proofs with Definitional Interpreters](https://doi.org/10.1145/3093333.3009866) (Amin and Tiark Rompf, POPL 2017), [A Logical Approach to Type Soundness](https://doi.org/10.1145/3676954) (Timany, Krebbers, Dreyer and Birkedal, Journal of the ACM 2024), [Autosubst: Reasoning with de Bruijn Terms and Parallel Substitutions](https://doi.org/10.1007/978-3-319-22102-1_24) (Schäfer, Tebbi and Smolka, ITP 2015).</small>
 
 </div>
-
-<ul>
-
-<li class="fragment">in Rocq</li>
-<li class="fragment">using a definitional interpreter</li>
-<li class="fragment">with semantic types</li>
-<li class="fragment">Autosubst 1 (de Bruijn indices)</li>
-<li class="fragment">doesn't include implication solver</li>
-
-</ul>
 
 
 ## <span class="chapter">Mechanization</span>: Interpretation
