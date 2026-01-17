@@ -84,9 +84,7 @@ href="https://ucsd-progsys.github.io/liquidhaskell/">Liquid Haskell</a>,
 href="https://fstar-lang.org/tutorial/book/part1/part1_getting_off_the_ground.html#boolean-refinement-types">Boolean
 refinement types in F*</a>, <a
 href="https://dafny.org/latest/DafnyRef/DafnyRef#sec-subset-types">Subset
-types in Dafny</a>, <a
-href="https://lean-lang.org/doc/reference/latest/Basic-Types/Subtypes/">Subtypes
-in Lean</a>, etc.</p>
+types in Dafny</a>, etc.</p>
 </div>
 <div class="fragment">
 <p>Prior art in Scala: <a
@@ -242,7 +240,7 @@ min(l2) // calls second overload</code></pre>
 </section>
 <section id="typing" class="slide level2">
 <h2><span class="chapter">Typing</span></h2>
-<p>For backward compatibility and performance reasons, qualified types
+<p>For backward compatibility and performance reasons, refinement types
 are not inferred from terms by default. The wider type is inferred
 instead:</p>
 <pre class="scala"><code>val x: /* Int */ = 42</code></pre>
@@ -265,9 +263,9 @@ checking.</li>
 </section>
 <section id="typing-selfification" class="slide level2">
 <h2><span class="chapter">Typing</span>: Selfification</h2>
-<p>However, when a qualified type is expected, the compiler can
+<p>However, when a refinement type is expected, the compiler can
 <em>selfify</em> the typed expression: that is, to give
-<code>e: T</code> the qualified type <code>x: T with x == e</code>:</p>
+<code>e: T</code> the refinement type <code>x: T with x == e</code>:</p>
 <pre class="scala"><code>val x: {v: Int with v == 42} = 42</code></pre>
 <div class="fragment">
 <p>As a typing rule:</p>
@@ -307,7 +305,7 @@ as Foundations for Stainless</a> (Hamza, Voirol and Kunčak, OOPSLA
 </section>
 <section id="runtime-checks" class="slide level2">
 <h2><span class="chapter">Runtime checks</span></h2>
-<p>When static checking fails, a qualified type can be checked at
+<p>When static checking fails, a refinement type can be checked at
 runtime using pattern matching:</p>
 <pre class="scala"><code>val idRegex = &quot;^[a-zA-Z_][a-zA-Z0-9_]*$&quot;
 type ID = {s: String with s.matches(idRegex)}</code></pre>
@@ -319,7 +317,6 @@ type ID = {s: String with s.matches(idRegex)}</code></pre>
         // default case, did not match</code></pre>
 </div>
 <aside class="notes">
-<p>Ideal timing: 09:15</p>
 <p>When the compiler can’t verify a predicate statically, you can use
 runtime checks. Pattern matching checks the predicate at runtime.</p>
 </aside>
@@ -342,9 +339,6 @@ when you expect the check to always pass:</p>
 <code>.asInstanceOf[ID]</code> directly to skip the check
 altogether.</p>
 </div>
-<aside class="notes">
-<p>Ideal timing: 10:00</p>
-</aside>
 </section>
 <section id="example-bound-checked-merge-sort" class="slide level2">
 <h2><span class="chapter">Example:</span> Bound-checked merge sort</h2>
@@ -439,8 +433,7 @@ equality reasoning.
 </li>
 </ul>
 <aside class="notes">
-<p>Ideal timing: 17:00</p>
-<p>To check if one qualified type is a subtype of another, the compiler
+<p>To check if one refinement type is a subtype of another, the compiler
 checks if the parent types are related, and if the first predicate
 implies the second. Our implementation uses a lightweight custom solver
 that combines several techniques.</p>
@@ -494,9 +487,9 @@ a, b, f &amp;::= \texttt{unit} \mid \texttt{true} \mid \texttt{false}
 \end{aligned}
 </span></p>
 <div class="fragment">
-<p>Mechanization for this fragment complete since yesterday. Done in
-Rocq, using a definitional interp, semantic types and Autosubst (for de
-Bruijn indices). Doesn’t include an implication solver.</p>
+<p>Mechanization done in Rocq, using a definitional interpreter,
+semantic types, and Autosubst (for de Bruijn indices). Does not yet
+include the implication solver.</p>
 <p><small>See <a href="https://doi.org/10.1145/3632912">Mechanizing
 Refinement Types</a> (Borkowski, Vazou and Jhala, POPL 2024), <a
 href="https://doi.org/10.1145/3093333.3009866">Type Soundness Proofs
@@ -561,7 +554,7 @@ A = a\ \texttt{in}\ b : \text{avoid}(B, x)}
 <li><strong>Syntax:</strong> <code>{x: T with p(x)}</code>, can omit
 binder,</li>
 <li><strong>First-class:</strong> integrates with Scala UX and features
-(overloading, implicit methods, givens, etc.),</li>
+(overloading, extension methods, givens, etc.),</li>
 <li><strong>Typing:</strong> imprecise types by default, can recover
 refinements using <em>selfification</em> and local unfolding,</li>
 <li><strong>Runtime checks:</strong> pattern matching,
@@ -726,7 +719,7 @@ extension [T](list: List[T])
 <section id="future-work-flow-sensitive-typing-2" class="slide level2">
 <h2><span class="chapter">Future work:</span> Flow-sensitive typing
 (2)</h2>
-<p>This would be required for “GADT-like” reasoning with qualified
+<p>This would be required for “GADT-like” reasoning with refinement
 types:</p>
 <div style="font-size: 0.7em;">
 <pre class="scala"><code>enum MyList[+T]:
@@ -763,9 +756,9 @@ products:</p>
 </section>
 <section id="subtyping-local-unfolding" class="slide level2">
 <h2><span class="chapter">Subtyping:</span> Local unfolding</h2>
-<p>As mentioned, qualified types are not inferred from terms by default.
-However, the solver can unfold definitions of local <code>val</code>
-(only), even when they have an imprecise type:</p>
+<p>As mentioned, refinement types are not inferred from terms by
+default. However, the solver can unfold definitions of local
+<code>val</code> (only), even when they have an imprecise type:</p>
 <pre class="scala"><code>val x: Int = ...
 val y: Int = x + 1
 
@@ -785,7 +778,7 @@ val y: Int = x + 1
 </section>
 <section id="subtyping-with-other-scala-types" class="slide level2">
 <h2><span class="chapter">Subtyping:</span> With other Scala types</h2>
-<p>Literal types are subtypes of singleton qualified types:</p>
+<p>Literal types are subtypes of singleton refinement types:</p>
 <pre class="scala"><code>3 &lt;: {v: Int with v == 3}</code></pre>
 <div class="fragment">
 <p>We plan to support subtyping with other Scala types in the

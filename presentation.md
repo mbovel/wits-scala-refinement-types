@@ -17,7 +17,7 @@ For example, $$\{ x: \text{Int} \mid x > 0 \}$$ denotes the type of all integers
 
 <div class="fragment">
 
-Implemented in many languages: [Liquid Haskell](https://ucsd-progsys.github.io/liquidhaskell/), [Boolean refinement types in F\*](https://fstar-lang.org/tutorial/book/part1/part1_getting_off_the_ground.html#boolean-refinement-types), [Subset types in Dafny](https://dafny.org/latest/DafnyRef/DafnyRef#sec-subset-types), [Subtypes in Lean](https://lean-lang.org/doc/reference/latest/Basic-Types/Subtypes/), etc.
+Implemented in many languages: [Liquid Haskell](https://ucsd-progsys.github.io/liquidhaskell/), [Boolean refinement types in F\*](https://fstar-lang.org/tutorial/book/part1/part1_getting_off_the_ground.html#boolean-refinement-types), [Subset types in Dafny](https://dafny.org/latest/DafnyRef/DafnyRef#sec-subset-types), etc.
 
 </div>
 
@@ -216,7 +216,7 @@ min(l2) // calls second overload
 
 ## <span class="chapter">Typing</span>
 
-For backward compatibility and performance reasons, qualified types are not inferred from terms by default. The wider type is inferred instead:
+For backward compatibility and performance reasons, refinement types are not inferred from terms by default. The wider type is inferred instead:
 
 ```scala
 val x: /* Int */ = 42
@@ -240,7 +240,7 @@ Because it would:
 
 ## <span class="chapter">Typing</span>: Selfification
 
-However, when a qualified type is expected, the compiler can _selfify_ the typed expression: that is, to give `e: T` the qualified type `x: T with x == e`:
+However, when a refinement type is expected, the compiler can _selfify_ the typed expression: that is, to give `e: T` the refinement type `x: T with x == e`:
 
 ```scala
 val x: {v: Int with v == 42} = 42
@@ -293,7 +293,7 @@ Similar rule in [System FR as Foundations for Stainless](https://doi.org/10.1145
 
 ## <span class="chapter">Runtime checks</span>
 
-When static checking fails, a qualified type can be checked at runtime using pattern matching:
+When static checking fails, a refinement type can be checked at runtime using pattern matching:
 
 ```scala
 val idRegex = "^[a-zA-Z_][a-zA-Z0-9_]*$"
@@ -313,8 +313,6 @@ type ID = {s: String with s.matches(idRegex)}
 </div>
 
 <div class="notes">
-
-Ideal timing: 09:15
 
 When the compiler can't verify a predicate statically, you can use runtime checks. Pattern matching checks the predicate at runtime.
 
@@ -343,12 +341,6 @@ val id: ID =
 <div class="fragment" style="font-size: 0.8em;">
 
 Note: like with other types, you can also use `.asInstanceOf[ID]` directly to skip the check altogether.
-
-</div>
-
-<div class="notes">
-
-Ideal timing: 10:00
 
 </div>
 
@@ -461,9 +453,7 @@ We developed a lightweight custom solver that combines several techniques:
 
 <div class="notes">
 
-Ideal timing: 17:00
-
-To check if one qualified type is a subtype of another, the compiler checks if the parent types are related, and if the first predicate implies the second. Our implementation uses a lightweight custom solver that combines several techniques.
+To check if one refinement type is a subtype of another, the compiler checks if the parent types are related, and if the first predicate implies the second. Our implementation uses a lightweight custom solver that combines several techniques.
 
 </div>
 
@@ -529,7 +519,7 @@ $$
 
 <div class="fragment">
 
-Mechanization for this fragment complete since yesterday. Done in Rocq, using a definitional interp, semantic types and Autosubst (for de Bruijn indices). Doesn't include an implication solver.
+Mechanization done in Rocq, using a definitional interpreter, semantic types, and Autosubst (for de Bruijn indices). Does not yet include the implication solver.
 
 <small>See [Mechanizing Refinement Types](https://doi.org/10.1145/3632912) (Borkowski, Vazou and Jhala, POPL 2024), [Type Soundness Proofs with Definitional Interpreters](https://doi.org/10.1145/3093333.3009866) (Amin and Tiark Rompf, POPL 2017), [A Logical Approach to Type Soundness](https://doi.org/10.1145/3676954) (Timany, Krebbers, Dreyer and Birkedal, Journal of the ACM 2024), [Autosubst: Reasoning with de Bruijn Terms and Parallel Substitutions](https://doi.org/10.1007/978-3-319-22102-1_24) (Schäfer, Tebbi and Smolka, ITP 2015).</small>
 
@@ -580,7 +570,7 @@ $$
 <div class="column wide-lists" style="flex: 3.6;">
 
 - **Syntax:** `{x: T with p(x)}`, can omit binder,
-- **First-class:** integrates with Scala UX and features (overloading, implicit methods, givens, etc.),
+- **First-class:** integrates with Scala UX and features (overloading, extension methods, givens, etc.),
 - **Typing:** imprecise types by default, can recover refinements using *selfification* and local unfolding,
 - **Runtime checks:** pattern matching, `.runtimeChecked`,
 - **Subtyping:** normalization, local unfolding, equality reasoning, compatibility with other types,
@@ -753,7 +743,7 @@ extension [T](list: List[T])
 
 ## <span class="chapter">Future work:</span> Flow-sensitive typing (2)
 
-This would be required for "GADT-like" reasoning with qualified types:
+This would be required for "GADT-like" reasoning with refinement types:
 
 <div style="font-size: 0.7em;">
 
@@ -808,7 +798,7 @@ Or grouping operands with the same constant factor in sums of products:
 
 ## <span class="chapter">Subtyping:</span> Local unfolding
 
-As mentioned, qualified types are not inferred from terms by default. However, the solver can unfold definitions of local `val` (only), even when they have an imprecise type:
+As mentioned, refinement types are not inferred from terms by default. However, the solver can unfold definitions of local `val` (only), even when they have an imprecise type:
 
 ```scala
 val x: Int = ...
@@ -843,7 +833,7 @@ This is implemented using an E-Graph-like data structure.
 
 ## <span class="chapter">Subtyping:</span> With other Scala types
 
-Literal types are subtypes of singleton qualified types:
+Literal types are subtypes of singleton refinement types:
 
 ```scala
 3 <: {v: Int with v == 3}
