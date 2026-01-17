@@ -154,9 +154,9 @@ val x: Int with (x % 2 == 0) = 42
 
 <div class="fragment">
 
-Refinement type subtyping is checked during type checking, not as a separate phase. Early prototypes did this as a separate phase, it was more complex and less reliable.
+Refinement type subtyping is checked during type checking, not as a separate phase. Early prototypes did this as a separate phase, with more drawbacks than benefits.
 
-<small>See also [Usability Barriers for Liquid Types](https://dl.acm.org/doi/10.1145/3729327) (Gamboa, Reese, Fonseca, Aldrich, PLDI 2025).</small>
+<small>See also [Usability Barriers for Liquid Types](https://dl.acm.org/doi/10.1145/3729327) (Gamboa, Reese, Fonseca and Aldrich, PLDI 2025).</small>
 
 </div>
 
