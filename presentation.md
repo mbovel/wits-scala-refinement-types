@@ -154,7 +154,7 @@ val x: Int with (x % 2 == 0) = 42
 
 <div class="fragment">
 
-Refinement type subtyping is checked during Scala type checking, not as a separate phase. Early prototypes did this as a separate phase, leading to poor UX.
+Refinement type subtyping is checked during type checking, not as a separate phase. Early prototypes did this as a separate phase, it was more complex and less reliable.
 
 </div>
 
@@ -743,7 +743,7 @@ extension [T](list: List[T])
 
 ## <span class="chapter">Future work:</span> Flow-sensitive typing (2)
 
-This would be required for "GADT-like" reasoning with refinement types:
+This would be required for reasoning with refinement types inside cases:
 
 <div style="font-size: 0.7em;">
 

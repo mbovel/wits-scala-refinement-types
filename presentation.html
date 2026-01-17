@@ -195,9 +195,9 @@ let x = 42 :: Int in ...</code></pre>
 <pre class="scala"><code>val x: Int with (x % 2 == 0) = 42</code></pre>
 </div>
 <div class="fragment">
-<p>Refinement type subtyping is checked during Scala type checking, not
-as a separate phase. Early prototypes did this as a separate phase,
-leading to poor UX.</p>
+<p>Refinement type subtyping is checked during type checking, not as a
+separate phase. Early prototypes did this as a separate phase, it was
+more complex and less reliable.</p>
 </div>
 </section>
 <section id="first-class-error-messages" class="slide level2">
@@ -719,8 +719,8 @@ extension [T](list: List[T])
 <section id="future-work-flow-sensitive-typing-2" class="slide level2">
 <h2><span class="chapter">Future work:</span> Flow-sensitive typing
 (2)</h2>
-<p>This would be required for “GADT-like” reasoning with refinement
-types:</p>
+<p>This would be required for reasoning with refinement types inside
+cases:</p>
 <div style="font-size: 0.7em;">
 <pre class="scala"><code>enum MyList[+T]:
   case Cons(head: T, tail: MyList[T])
